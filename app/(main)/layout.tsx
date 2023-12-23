@@ -1,12 +1,13 @@
-import GroupInputPeserta from "./dashboard/components/dashboard-inputPesertaGroup"
-import MenuDashboard from "./dashboard/components/dashboard-menu"
 
-const MainLayout = ({
+const MainLayout = async({
     children
 }:{
     children: React.ReactNode
 }) =>{
+   
+
     return(
+    
       <div
         className="
           h-full
@@ -19,7 +20,6 @@ const MainLayout = ({
           md:max-w-screen-2xl
         "
       >
-        <MenuDashboard/>
         { children }
       </div>
           

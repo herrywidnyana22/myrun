@@ -3,32 +3,20 @@
 import { getPeserta } from "@/actions/peserta/get";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { UserKategori } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
 
-const MenuDashboard = () => {
+interface MenuDashboardProps{
+    userMenu: UserKategori[] | any
+}
+
+const MenuDashboard = ({userMenu}: MenuDashboardProps) => {
     const router = useRouter()
     const pathName = usePathname()
-    const navbarRoutes = [
-        {
-            label: "Boards",
-            href: `/dashboard/board`
-        }, {
-            label: "Aktivitas",
-            href: `/dashboard/activity`
-        }, {
-            label: "Pengaturan",
-            href: `/dashboard/setting`
-        }, {
-            label: "Langganan",
-            href: `/dashboard/billing`
-        },
-    ]
-    
     
     const onClickNavbar = async(href: string) =>{
         router.push(href)
     }
-
 
     return (
         <div
@@ -42,7 +30,7 @@ const MenuDashboard = () => {
             "
         >
             {
-                navbarRoutes.map((item, i) =>(
+                userMenu && userMenu.map((item: any, i:number) =>(
                     <Button
                         key={i}
                         variant="outline"
