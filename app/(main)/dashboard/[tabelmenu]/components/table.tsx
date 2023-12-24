@@ -336,14 +336,19 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                           <TableRow
                             key={row.id}
                             data-state={row.getIsSelected() && "selected"}
+                           
                           >
                             {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>
-                                  {flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext()
-                                  )}
+                                <TableCell 
+                                  key={cell.id}
+                                  className={row.getIsSelected() ? "bg-neutral-700/20" : ""}
+                                >
+                                    {flexRender(
+                                      cell.column.columnDef.cell,
+                                      cell.getContext()
+                                    )}
                                 </TableCell>
+                
                             ))}
                             </TableRow>
                         ))
@@ -389,6 +394,22 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                       Next
                   </Button>
                 </div>
+            </div>
+            <div>
+              {
+                (table.getIsAllPageRowsSelected() || 
+                table.getIsSomePageRowsSelected()) && 
+                (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                  >
+                    <Trash2
+                      className="w-4 h-4"
+                    />
+                  </Button>
+                )
+              }
             </div>
         </div>
     </>
