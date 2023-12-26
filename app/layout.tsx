@@ -45,9 +45,10 @@ export default function RootLayout({
             <main
                 className="
                     w-full
-                    h-full
+                    h-auto
                     pt-20
-                    pb-20
+                    pb-60
+                    mt-8
                     bg-slate-100
                 "
             >

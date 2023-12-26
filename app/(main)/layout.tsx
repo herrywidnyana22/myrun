@@ -23,7 +23,8 @@ const MainLayout = async({
     
       <div
         className="
-          h-full
+          relative
+          h-auto
           mx-auto
           space-y-4
           items-center

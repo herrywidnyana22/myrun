@@ -1,12 +1,13 @@
 import ButtonForm from "@/components/form/butonForm";
 import InputForm from "@/components/form/inputForm";
 
-const GroupInputPeserta = () => {
+const GroupInputPeserta = ({menu}: {menu: string}) => {
     return (
         <div 
             className="
                 w-full
                 p-4
+                border
                 space-y-4
                 shadow-md
                 rounded-lg
@@ -19,33 +20,78 @@ const GroupInputPeserta = () => {
                     tetx-neutral-700
                 "
             >
-                Menu title
+                {`Peserta Baru ${menu}`} 
             </h1>
             <div
                 className="
-                    flex
-                    flex-wrap
+                    grid
+                    grid-cols-2
+                    gap-4
+                    gap-y-8
                     justify-between
                     py-4
                 "
             >
+                <div
+                    className="
+                        space-y-3
+                    "
+                >
+                    <InputForm
+                        id="noPeserta1"
+                        type="number"
+                        label="No Peserta"
+                    />
+                    <div
+                        className="
+                            flex
+                            gap-1
+                            items-center
+                        "
+                    >
+                        <InputForm
+                            id="waktu1"
+                            type="number"
+                            label="Jam"
+                            isWaktu
+                            className="
+                                appearance-none
+                            "
+                        />
+                        <p>:</p>
+                        <InputForm
+                            id="waktu2"
+                            type="number"
+                            label="Menit"
+                            isWaktu
+                            className="
+                                appearance-none
+                            "
+                        />
+                        <p>:</p>
+                        <InputForm
+                            id="waktu3"
+                            type="number"
+                            label="Detik"
+                            isWaktu
+                            className="
+                                appearance-none
+                            "
+                        />
+                    </div>
+                </div>
                 <InputForm
-                    id="noPeserta1"
+                    id="noPeserta2"
                     type="number"
                     label="No Peserta"
                 />
                 <InputForm
-                    id="noPeserta1"
+                    id="noPeserta3"
                     type="number"
                     label="No Peserta"
                 />
                 <InputForm
-                    id="noPeserta1"
-                    type="number"
-                    label="No Peserta"
-                />
-                <InputForm
-                    id="noPeserta1"
+                    id="noPeserta4"
                     type="number"
                     label="No Peserta"
                 />

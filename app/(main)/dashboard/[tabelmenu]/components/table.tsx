@@ -63,8 +63,8 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
             <div key={posData.id}>
               {
                 posData.id
-                ? <CheckCircle2 className="w-4 h-4 text-neutral-400"/>
-                : <Minus/>
+                ? <CheckCircle2 className="w-4 h-4 text-neutral-500"/>
+                : <Minus className="w-4 h-4 text-neutral-500"/>
               }
             </div>
           ))}
@@ -110,8 +110,10 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
       },
       cell: ({ row }) => 
         <div 
-          className="lowercase"
-        >
+          className="
+            font-bold
+            ml-4
+        ">
             { row.getValue("noPeserta")}
         </div>
     },
@@ -341,7 +343,6 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                             {row.getVisibleCells().map((cell) => (
                                 <TableCell 
                                   key={cell.id}
-                                  className={row.getIsSelected() ? "bg-neutral-700/20" : ""}
                                 >
                                     {flexRender(
                                       cell.column.columnDef.cell,
@@ -365,7 +366,14 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
+            <div 
+              className="
+                flex 
+                items-center 
+                justify-end 
+                space-x-2 
+                py-4
+            ">
                 <div className="flex-1 text-sm text-muted-foreground">
                   {table.getFilteredSelectedRowModel().rows.length} / {" "}
                   {table.getFilteredRowModel().rows.length} ditandai.
@@ -379,7 +387,13 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                   >
                       Previous
                   </Button>
-                  <span className="flex items-center gap-1 text-sm">
+                  <span 
+                    className="
+                      flex 
+                      items-center 
+                      gap-1 
+                      text-sm
+                  ">
                     <strong>
                       {table.getState().pagination.pageIndex + 1} /{' '}
                       {table.getPageCount()}

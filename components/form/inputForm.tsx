@@ -6,6 +6,8 @@ interface InputFormProps{
     placeholder?: string
     type?: "text" | "password" | "number"
     label?: string
+    isWaktu?: boolean
+    className?: string
 }
 
 const InputForm = ({
@@ -13,7 +15,9 @@ const InputForm = ({
     type,
     label,
     placeholder,
-    disabled
+    disabled,
+    isWaktu,
+    className
 }: InputFormProps) => {
     return (
         <div
@@ -30,6 +34,7 @@ const InputForm = ({
                 disabled={disabled}
                 placeholder={placeholder ? placeholder : "  "}
                 className={cn(`
+                    appearance-none
                     w-full
                     peer
                     p-2
@@ -45,6 +50,8 @@ const InputForm = ({
                     disabled:opacity-70
                     disabled:cursor-not-allowed
                     focus:text-sm`,
+                    className
+                    
                 )}
             />
             <label className={cn(`
@@ -63,8 +70,9 @@ const InputForm = ({
                 peer-placeholder-shown:scale-100
                 peer-placeholder-shown:translate-y-0
                 peer-focus:scale-75
-                peer-focus:-translate-y-5`,  
-                
+                peer-focus:-translate-y-5`,
+                isWaktu && "left-1 peer-focus:-translate-y-5",
+                className  
             )}>
                 { label }
             </label>

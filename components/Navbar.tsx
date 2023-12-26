@@ -19,6 +19,7 @@ const Navbar = () => {
                 px-4
                 border-b
                 shadow-sm
+                z-20
                 bg-white
             "
         >
