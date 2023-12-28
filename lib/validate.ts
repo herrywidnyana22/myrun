@@ -104,3 +104,29 @@ export const duplicateValidate = (
 
 }
 
+export const isGroupEmpty = (
+    data: any,
+    setValidateMsg: any,
+    setIsError: any
+) =>{
+    const  error: ErrorMessages  = {}
+    let isEmpty = true
+    for (const field in data){
+        if(data[field] !== '' && data[field] !== null) {
+            return isEmpty = false
+        } else {
+            error[field] = ValidateMessage.groupRequired
+            
+        }
+    }
+
+    if(isEmpty) {
+        setValidateMsg(error)
+        setIsError(true)
+        return true
+    } else {
+        return false
+    }
+
+}
+

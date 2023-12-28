@@ -1,11 +1,13 @@
 'use client'
 
+import { addPeserta } from "@/actions/peserta/add";
 import ButtonForm from "@/components/form/butonForm";
 import InputForm from "@/components/form/inputForm";
-import { duplicateValidate, existValidate } from "@/lib/validate";
-import { InputPesertaComponent } from "@/types";
+import { duplicateValidate, existValidate, isGroupEmpty } from "@/lib/validate";
+import { AlertMessage, InputPesertaComponent, TimeFormat } from "@/types";
 import { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { toast } from "sonner";
 
 interface GroupInputProps{
     userKategori: string
@@ -25,7 +27,8 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
     
 
     const { pending } = useFormStatus()
-    const posId = userPos.id
+    const posID = userPos.id
+    const kategoriID = userPos.kategori.id
     const jumlahInput = 4
 
     function initialPesertaInput(){
@@ -66,7 +69,6 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
     }
 
     const onInputPeserta = (e: React.ChangeEvent<HTMLInputElement>) =>{
-        
         const {value, name, id} = e.target
         const updateFieldData = inputPeserta.map((field) =>{
             if(field.id === id) {
@@ -77,6 +79,63 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
         })
         
         setInputPeserta(updateFieldData)
+    }
+
+    const onSubmit = async(formData: FormData) =>{
+        setIsLoading(true)
+        // e.preventDefault()
+        const noPeserta = Object.fromEntries(formData)
+
+        if (isGroupEmpty(noPeserta, setValidateMsg, setIsError)){
+            setIsLoading(false)
+            setIsEmpty(true)
+            return toast.error("Ada kesalahan...!")
+        }
+        let responAddPeserta
+        try {
+            responAddPeserta = await addPeserta(
+                transformData(inputPeserta),
+                kategoriID, 
+                userPos.posFinish
+            )
+            if(responAddPeserta){
+                toast.success(AlertMessage.addSuccess)
+            }
+            
+        } catch (error) {
+            toast.error(AlertMessage.addFailed)
+        } finally{
+            setIsLoading(false)
+        }
+        
+
+        console.log(responAddPeserta)
+        
+    }
+
+    const transformData = (data: TimeFormat[]): any[] =>{
+        const result: any[] = [];
+
+        // Iterate over each object in the inputData array
+        data.forEach((inputObj) => {
+            const id = inputObj.id;
+
+            // Iterate over the properties of the current object
+            for (const propName in inputObj) {
+                if (propName !== 'id' && propName !== 'time') {
+                    const newObj: any = { id };
+                    newObj[propName] = inputObj[propName];
+
+                    // Use type assertions to access properties of the 'time' object
+                    const timeObj = inputObj['time'][0] as { hour: string; minute: string; second: string; millisecond: string };
+                    newObj['time'] = timeObj.hour + ':' + timeObj.minute + ':' + timeObj.second + ':' + timeObj.millisecond;
+
+                    result.push(newObj);
+                }
+            }
+        })
+
+        return result
     }
 
     useEffect(() =>{
@@ -93,8 +152,8 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
     }, [validateMsg, duplicateMsg])
 
     return (
-        <form action="">
-            {/* {JSON.stringify(userPos)} */}
+        <form action={onSubmit}>
+            {JSON.stringify(userPos)}
             <div 
                 className="
                     w-full
@@ -146,7 +205,7 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
                                 isDoubleValidate
                                 onChange={(e) => {
                                     onInputPeserta(e)
-                                    existValidate({e, model: "peserta", setValidateMsg, validateMsg, setIsError, isEdit:posId})
+                                    existValidate({e, model: "peserta", setValidateMsg, validateMsg, setIsError, isEdit:posID})
                                     duplicateValidate(e, inputPeserta, setDuplicatMsg, duplicateMsg, setIsError)
                                     resetValidateMsg()
                                 }}   
@@ -199,6 +258,7 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
                     
                 </div>
                 <ButtonForm
+                    
                     varian="ghost"
                     disabled={isLoading || pending || isError}
                     className="

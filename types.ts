@@ -89,3 +89,15 @@ export type validationType = {
     setIsError?: any
     isEdit: string
 }
+
+export type InputTimeProps = {
+  hour?: string
+  minute?: string
+  second?: string
+  millisecond?: string
+}
+
+export type TimeFormat = {
+    id: string;
+    [key: string]: string | InputTimeProps[]
+}

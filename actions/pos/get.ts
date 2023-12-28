@@ -42,6 +42,7 @@ export async function getPosName(menuName: string) {
             posFinish: true,
             kategori:{
                 select:{
+                    id: true,
                     namaKategori:true
                 }
             }

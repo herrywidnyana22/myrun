@@ -102,7 +102,7 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
     },[dataTable, isCheckAll, posID])
     
    
-    const onSingleCheck = (value: boolean, itemId: string) => {
+    const onSingleCheck = (value: any, itemId: string) => {
         const isChecked = value
         if (isChecked) {
             setCheckAll((prevItems) => [...prevItems, itemId]);
@@ -114,22 +114,6 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
     // use patch because bring more than 1 iD
     const onDeleteChecked = async() =>{
         setIsLoading(true)
-
-        // await axios
-        // .patch(`/api/peserta`, {data: checkAll, posId: posId.id})
-        // .then (() => {
-        //     toast.success(AlertMessage.removeSuccess) 
-        //     mutate(menu) 
-        //     router.refresh()
-        // })
-        // .catch (() =>{
-        //     toast.error(AlertMessage.removeFailed)
-        // })
-        // .finally(() => {
-        //     setIsLoading(false)
-        //     setSelectedDelete(null)
-        //     setCheckAll([])
-        // })
 
         try {
           const responDelete = await checkedDelete(checkAll, posID)
