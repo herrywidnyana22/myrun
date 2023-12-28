@@ -8,9 +8,7 @@ export const getPeserta = async(menuName: string) =>{
     const role = Role.PANITIA
     const namaKategori = formatURL(menuName)
     // const namaKategori = "Anak"
-    console.log(namaKategori)
     
-
     const data = await db.peserta.findMany({
         select:{
             id: true,

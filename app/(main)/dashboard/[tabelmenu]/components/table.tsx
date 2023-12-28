@@ -210,9 +210,7 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
         rowSelection,
       },
   })
- 
-  
-  console.log(dataTable)
+
 
   return (
     <>

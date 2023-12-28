@@ -7,7 +7,7 @@ import { UserKategori } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
 
 interface MenuDashboardProps{
-    userMenu: UserKategori[] | any
+    userMenu: UserKategori[] | any,
 }
 
 const MenuDashboard = ({userMenu}: MenuDashboardProps) => {

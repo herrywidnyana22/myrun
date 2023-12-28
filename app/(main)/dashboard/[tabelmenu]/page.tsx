@@ -15,7 +15,7 @@ interface MainPageProps{
 
 const MainPage = async({params}: MainPageProps) => {
     const dataPeserta = await getPeserta(params.tabelmenu)
-    const getPosID = await getPosName(params.tabelmenu)
+    const userPos = await getPosName(params.tabelmenu)
     const getPosData =  await getPos(params.tabelmenu)
 
     return (
@@ -33,7 +33,7 @@ const MainPage = async({params}: MainPageProps) => {
                     <TableContent
                         dataTable={dataPeserta}
                         posData={getPosData}
-                        userPos={getPosID}
+                        userPos={userPos}
                     />
                 </div>
             </Suspense>
@@ -41,7 +41,10 @@ const MainPage = async({params}: MainPageProps) => {
             {/* INPUT GROUP */}
             <div className="space-y-4 col-span-1">
                 <CardGroup data={dataPeserta}/>
-                <GroupInputPeserta menu={params.tabelmenu}/>
+                <GroupInputPeserta 
+                    userKategori={params.tabelmenu}
+                    userPos = {userPos} 
+                />
             </div>
         </div>
     )

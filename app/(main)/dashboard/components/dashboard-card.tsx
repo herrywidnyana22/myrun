@@ -27,8 +27,6 @@ const  CardGroup= ({data}: cardGroupProps) => {
     })
 
     const fastestPesertaData = sortedData[0]
-    
-    console.log(fastestPesertaData)
 
     // {
     //     "id": "652992ae7a99922ac1b5ec62",

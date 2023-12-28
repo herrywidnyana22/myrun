@@ -1,15 +1,22 @@
-import userMenu from "@/hooks/useMenu"
-import GroupInputPeserta from "./dashboard/components/dashboard-inputPesertaGroup"
 import MenuDashboard from "./dashboard/components/dashboard-menu"
+
+import { getPosName } from "@/actions/pos/get"
 import { getKategoriUser } from "@/actions/kategori/get"
-import { UserKategori } from "@/types"
+
+
+interface MainLayoutProps{
+    params:{
+        tabelmenu: string
+    }
+    children: React.ReactNode
+}
 
 const MainLayout = async({
-    children
-}:{
-    children: React.ReactNode
-}) =>{
+    children,
+    params
+}: MainLayoutProps)  =>{
     const userKategori = await getKategoriUser()
+    
 
     const menuPanitia = userKategori.flatMap((item) => 
       item.pos.map((posItem) => ({
@@ -19,8 +26,10 @@ const MainLayout = async({
       })
     ))
 
+    const userPos = await getPosName(params.tabelmenu)
+
     return(
-    
+      
       <div
         className="
           relative
@@ -34,7 +43,7 @@ const MainLayout = async({
           md:max-w-screen-2xl
         "
       >
-        <MenuDashboard userMenu = {menuPanitia}/>
+        <MenuDashboard userMenu = {params.tabelmenu}/>
         { children }
       </div>
           
