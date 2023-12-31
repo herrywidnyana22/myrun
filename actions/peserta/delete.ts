@@ -4,10 +4,10 @@ import { db } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 
 export async function singleDeleted(pesertaID: string) {
+    let deletePeserta
     try {
         console.log(pesertaID)
 
-        let deletePeserta
 
         const cekNoPeserta =  await db.peserta.findFirst({
             where: {
@@ -47,15 +47,18 @@ export async function singleDeleted(pesertaID: string) {
         }
         
 
-        return {
-            deletePeserta
-        }
 
     } catch (error) {
         return{
-            error: error
+            deletePeserta: error
         }
 
+    }
+
+    revalidatePath("/dashboard/")
+    
+    return{
+        data: deletePeserta
     }
 }
 
@@ -99,7 +102,7 @@ export async function checkedDelete(data: any, posID: string){
 
     } catch (error) {
         return {
-            error: error
+            deletePeserta: error
         }
     }
 

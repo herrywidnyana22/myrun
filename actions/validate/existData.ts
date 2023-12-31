@@ -2,13 +2,18 @@
 
 import { db } from "@/lib/db"
 
-export async function existData(data: any, model:string, isEdit:string){
+export async function existData(
+    data: any, 
+    model:string, 
+    dataID:string, 
+    pesertaID?: string 
+){
 
     try {
         let respon: any[]= []
         switch (model) {
             case "kategori":
-                if(!isEdit) {
+                if(!dataID) {
                     respon = await db.kategori.findMany({
                         select:{
                             id: true,
@@ -33,7 +38,7 @@ export async function existData(data: any, model:string, isEdit:string){
                                     namaKategori: data
                                 }, {
                                     id:{
-                                        not: isEdit
+                                        not: dataID
                                     }
                                 }
                         ]},
@@ -43,7 +48,7 @@ export async function existData(data: any, model:string, isEdit:string){
                 break
             
             case "panitia":
-                if(!isEdit){
+                if(!dataID){
                     respon = await db.panitia.findMany({
                         select:{
                             id: true,
@@ -67,7 +72,7 @@ export async function existData(data: any, model:string, isEdit:string){
                                     username: data
                                 }, {
                                     id: {
-                                        not: isEdit
+                                        not: dataID
                                     }
                                 }
                             ]
@@ -79,24 +84,57 @@ export async function existData(data: any, model:string, isEdit:string){
             break
     
             case "peserta":
-                respon = await db.peserta.findMany({
-                    select:{
-                        id: true,
-                        noPeserta: true
-                    },
-    
-                    where:{
-                        AND:[
-                            {
-                                noPeserta: data
-                            }, {
-                                posId:{
-                                    hasSome: [isEdit]
+                if(pesertaID){
+                    console.log("true")
+                    respon = await db.peserta.findMany({
+                        select:{
+                            id: true,
+                            noPeserta: true
+                        },
+        
+                        where:{
+                            AND:[
+                                {
+                                    noPeserta: data
+                                }, {
+                                    posId:{
+                                        hasSome: [dataID]
+                                    }
+                                }, {
+                                    id:{
+                                        not: pesertaID
+                                    }
                                 }
-                            }
-                        ]
-                    },
-                })
+                            ]
+                        },
+                    })
+                } else {
+                    console.log("false")
+                    console.log({data})
+                    console.log({dataID})
+                    console.log({pesertaID})
+                    console.log({model})
+                    respon = await db.peserta.findMany({
+                        select:{
+                            id: true,
+                            noPeserta: true,
+                        },
+        
+                        where:{
+                            AND:[
+                                {
+                                    noPeserta: data
+                                }, {
+                                    posId:{
+                                        hasSome: [dataID]
+                                    }
+                                }
+                            ]
+                        },
+                    })
+                }
+
+                console.log({respon})
                     
             break
                 
@@ -106,17 +144,10 @@ export async function existData(data: any, model:string, isEdit:string){
     
     
         if(respon.length === 0) {
-            return {
-                status: 'ok',
-                code: '200'
-            }
+            return false
         }
         
-        return {
-            status: 'duplicate',
-            code: '409',
-            data: respon
-        }
+        return true
         
     } catch (error) {
         return{

@@ -43,7 +43,7 @@ const MainLayout = async({
           md:max-w-screen-2xl
         "
       >
-        <MenuDashboard userMenu = {params.tabelmenu}/>
+        <MenuDashboard userMenu = {menuPanitia}/>
         { children }
       </div>
           

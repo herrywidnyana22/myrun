@@ -40,16 +40,7 @@ const checkData = async(name: keyof PrismaClient, data: string) => {
                 
             default:
                 break;
-        }
-
-        
-
-
-        // //@ts-ignore
-        // data = await prisma[menu].findMany()       
-        // // const data = await prisma.kategori.findMany()
-
-        
+        }        
         return respon
 
     } catch (error) {

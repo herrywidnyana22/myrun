@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, CheckCircle2, ChevronDown, Minus, MoreHorizontal, PenIcon, Pencil, Trash2 } from "lucide-react"
+import { ArrowUpDown, Check, CheckCircle2, ChevronDown, Loader2, Minus, MoreHorizontal, Pencil, Trash2, X } from "lucide-react"
  
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -34,11 +34,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useCallback, useState } from "react"
+import { ElementRef, useCallback, useEffect, useRef, useState } from "react"
 import { AlertMessage, PesertaData, UserPos, posData } from "@/types"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
-import { checkedDelete } from "@/actions/peserta/delete"
+import { checkedDelete, singleDeleted } from "@/actions/peserta/delete"
+import { useFormStatus } from "react-dom"
+import { cn } from "@/lib/utils"
+import InputForm from "@/components/form/inputForm"
+import { existValidate } from "@/lib/validate"
 
 interface TableContentProps{
   dataTable: PesertaData[]
@@ -51,27 +55,37 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
+  const [pesertaData, setPesertaData] = useState(dataTable)
 
-  const [editMode, setEditMode] = useState<number | null>(null)
-
+  const [pesertaEdited, setPesertaEdited] = useState<any>()
+  const [noPesertaTest, setNoPesertaTest] = useState<any>()
   // check state
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isCheckAll, setIsCheckAll] = useState<boolean>(false)
   const [isError, setIsError] = useState<boolean>(false)
+
+  // validate state
+  const [validateMsg, setValidateMsg] = useState()
+  const [duplicateMsg, setDuplicatMsg] = useState()
+  const [isEmpty, setIsEmpty] = useState(false)
   
     // delete state
   const [checkAll, setCheckAll] = useState<string[]>([])
-  const [selectedDelete, setSelectedDelete] = useState<number | null>()
   
-
   const posID = userPos.id
+
+  // const refForm = useRef<ElementRef<"form">>(null)
+  // const refInput = useRef<ElementRef<"input">>(null)
+  const refForm = useRef<{ [key: string]: HTMLFormElement | null }>({});
+  const refInput = useRef<{ [key: string]: HTMLInputElement | null }>({});
   
   const posColumns: ColumnDef<PesertaData>[] = posData.map((posItem) => ({
     id: posItem.namaPos,
     header: posItem.namaPos,
     cell: ({ row }) => (
       <div>
-        {row.original.pos
+        {
+          row.original.pos
           .filter((posData) => posData.id === posItem.id)
           .map((posData) => (
             <div key={posData.id}>
@@ -84,77 +98,147 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
           ))}
       </div>
     ),
-  }));
+  }))
 
   // Delete prosedure
-    const oncheckAll = useCallback(() =>{
-        setIsCheckAll(!isCheckAll)
-        setCheckAll(
-            isCheckAll 
-            ? [] 
-            : dataTable 
-                ? dataTable
-                    .filter((item: any) => item.pos.some((posItems:any) => posItems.id === posID))
-                    .map((item: any) => item.id)
-                : []
-        )
-        
-    },[dataTable, isCheckAll, posID])
-    
-   
-    const onSingleCheck = (value: any, itemId: string) => {
-        const isChecked = value
-        if (isChecked) {
-            setCheckAll((prevItems) => [...prevItems, itemId]);
-        } else {
-            setCheckAll((prevItems) => prevItems.filter((id) => id !== itemId));
-        }
-    }
-    
-    // use patch because bring more than 1 iD
-    const onDeleteChecked = async() =>{
-        setIsLoading(true)
+  const oncheckAll = useCallback(() =>{
+      setIsCheckAll(!isCheckAll)
+      setCheckAll(
+          isCheckAll 
+          ? [] 
+          : pesertaData 
+              ? pesertaData
+                  .filter((item: any) => item.pos.some((posItems:any) => posItems.id === posID))
+                  .map((item: any) => item.id)
+              : []
+      )
+      
+  },[pesertaData, isCheckAll, posID])
+  
+  
+  const onSingleCheck = (value: any, itemId: string) => {
+      const isChecked = value
+      if (isChecked) {
+          setCheckAll((prevItems) => [...prevItems, itemId]);
+      } else {
+          setCheckAll((prevItems) => prevItems.filter((id) => id !== itemId));
+      }
 
-        try {
-          const responDelete = await checkedDelete(checkAll, posID)
-          if(responDelete){
-            toast.success(AlertMessage.removeSuccess)
-          }
-        } catch (error) {
-          toast.error(AlertMessage.removeFailed)
-        } finally{
-          setIsLoading(false)
-        }
+      console.log({value})
+  }
+  
+  // use patch because bring more than 1 iD
+  const onDeleteChecked = async() =>{
+    setIsLoading(true)
+
+    try {
+      const responDelete = await checkedDelete(checkAll, posID)
+      if(responDelete){
+        toast.success(AlertMessage.removeSuccess)
+      }
+    } catch (error) {
+      toast.error(AlertMessage.removeFailed)
+    } finally{
+      setIsLoading(false)
     }
+  }
+
+  const onSingleDelete =async(id: string) => {
+    setIsLoading(true)
+    const pesertaId = id
+
+    try {
+      const responDeleted = await singleDeleted(pesertaId)
+
+      if(responDeleted){
+        toast.success(AlertMessage.removeSuccess)
+      }
+
+    } catch (error) {
+      toast.error(AlertMessage.removeFailed)
+    } finally{
+      setIsLoading(false)
+    }
+  
+  }
+
+  const editModeOn = (pesertaID: string) => {
+    const inputElement = refInput.current[pesertaID]
+    setPesertaEdited(pesertaID)
+
+    setTimeout(() => {
+        inputElement?.focus()
+        inputElement?.select()
+    })
+  }
+
+  const handleNoPesertaChange = async (e: any) => {
+    e.preventDefault();
+    const { value, name } = e.target;
+    console.log("Before setNoPesertaTest");
+    await setNoPesertaTest(value);
+    console.log("After setNoPesertaTest");
+    const inputElement = refInput.current[pesertaEdited];
+    inputElement?.focus();
+  };
+
+  function anyfunction(value: string) {
+    console.log({value});
+  }
+
+  const onSave = async(formData: FormData) =>{
+    const noPeserta = refInput.current[pesertaEdited]?.value
+    // existValidateOnTable({value:noPeserta, id:pesertaEdited, model: "peserta", setValidateMsg, validateMsg, setIsError, isEdit:posID})
+    console.log({noPeserta})
+  }
+
+  const onCancelEdit = () =>{
+    setPesertaEdited("")
+    setPesertaData(dataTable)
+  }
+
+  const resetValidateMsg = () =>{
+      if(isEmpty) {
+          setValidateMsg(undefined)
+          setIsEmpty(false)
+      }
+  }
+  
+
+  useEffect(() => {
+    setCheckAll([])
+    setPesertaData(dataTable)
+  }, [dataTable])
+
 
   const columns: ColumnDef<PesertaData>[] = 
   [
     {
       id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => {
-            oncheckAll()
-            table.toggleAllPageRowsSelected(!!value)
-          }}
-          // onChange={oncheckAll}
-        />
-      ),
+      header: ({ table }) => {
+        const pesertaInPos = dataTable.filter((item) => {
+          return item.pos.some((pos) => pos.id === posID)
+        })
+        const isSelectedAll = pesertaInPos.length > 0 && pesertaInPos.length === checkAll.length
+
+        return (
+          <Checkbox
+            disabled={isLoading}
+            checked={isSelectedAll || table.getIsSomePageRowsSelected() && "indeterminate"} 
+            onCheckedChange={() => oncheckAll()}
+          />
+        )
+      },
       cell: ({ row }) => {
         const pesertaData = row.original
+        const isSelected = checkAll.includes(pesertaData.id);
+
         if(pesertaData.pos.some((item: any) => item.id === posID)) {
           return (
             <Checkbox
-              checked={row.getIsSelected()}
-              // onChange={(e) => onSingleCheck(e, pesertaData.id)} 
-              onCheckedChange={(value) => {
-                row.toggleSelected(!!value)
-                onSingleCheck(value, pesertaData.id)
-              }}
+              disabled={isLoading}
+              checked={isSelected}
+              onCheckedChange={(e) => onSingleCheck(e, pesertaData.id)} 
             />
           )
         } 
@@ -176,14 +260,36 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
           </Button>
         )
       },
-      cell: ({ row }) => 
-        <div 
-          className="
-            font-bold
-            ml-4
-        ">
-            { row.getValue("noPeserta")}
-        </div>
+      cell: ({ row }) => {
+        const data = row.original
+        const editMode = pesertaEdited === data.id && pesertaEdited !== ""
+        return (
+          <div 
+            className="
+              font-bold
+              ml-4
+          ">
+            <form
+              ref={(el) => (refForm.current[data.id] = el)} 
+              action={onSave}
+            >
+              <InputForm
+                ref={(el) => (refInput.current[data.id] = el)}
+                id={data.id}
+                name={pesertaEdited}
+                type="number"
+                readOnly={!editMode}
+                label={row.getValue("noPeserta")}
+                validateMsg={validateMsg}
+                secondValidateMsg={duplicateMsg}
+                onChange={(e) => handleNoPesertaChange(e)}
+              />
+            </form>
+            
+          </div>
+        )
+      }
+        
     },
     ...posColumns,
     {
@@ -199,7 +305,15 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
           </Button>
         )
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue("waktu")}</div>,
+      cell: ({ row }) => {
+        const pesertaData = row.original
+        const editMode = pesertaEdited === pesertaData.id && pesertaEdited !== ""
+        return(
+          <div className="lowercase">
+            {row.getValue("waktu")}
+          </div>
+        )
+      }
     },
     {
       id: "actions",
@@ -207,26 +321,72 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
   
       cell: ({row}) => {
         const dataRow = row.original
+        const pesertaID = dataRow.id
         if (dataRow.pos.some(pos => pos.id === posID)){
           return (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
+                <div className="text-center">
                   <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
+                  {
+                    pesertaEdited === pesertaID 
+                    ? (
+                        <div className="space-x-2">
+                          <Button
+                            // onClick={() => refForm.current[pesertaID]?.requestSubmit()}
+                            type="submit"
+                            variant="outline" 
+                            className="
+                              h-8 
+                              w-8 
+                              p-0 
+                              hover:bg-green-400 
+                              hover:text-white
+                            "
+                          >
+                            <Check 
+                              className="h-4 w-4" 
+                            />
+                          </Button>
+                          <Button
+                            onClick={onCancelEdit} 
+                            variant="outline" 
+                            className="
+                              h-8 
+                              w-8 
+                              p-0 
+                              hover:bg-rose-400 
+                              hover:text-white
+                            "
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )
+                    : (
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost" 
+                            className="h-8 w-8 p-0"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                      )
+                  }
+                </div>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                  Actions
+                </DropdownMenuLabel>
                 <DropdownMenuItem
                   className="
                     space-x-1
                     cursor-pointer
                     text-neutral-600
                     hover:text-white
-                    hover:bg-gray-400
+                    hover:bg-orange-300
                   "
-                  onClick={() => navigator.clipboard.writeText(dataRow.id)}
+                  onClick={() => editModeOn(pesertaID)} 
                 >
                   <Pencil
                     className="
@@ -234,17 +394,18 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                       h-3
                     "
                   />
-                  <p>{`Ubah peserta ini ${dataRow.id}`}</p>
+                  <p>Ubah peserta ini</p>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                    className="
-                      space-x-1
-                      cursor-pointer
-                      text-neutral-600
-                      hover:text-white
-                      hover:bg-gray-400
-                  "
+                  onClick={() => onSingleDelete(dataRow.id)}
+                  className="
+                    space-x-1
+                    cursor-pointer
+                    text-neutral-600
+                    hover:text-white
+                    hover:bg-rose-400
+                "
                 >
                   <Trash2
                     className="
@@ -265,7 +426,7 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
   ]
 
   const table = useReactTable({
-      data: dataTable,
+      data: pesertaData,
       columns,
       onSortingChange: setSorting,
       onColumnFiltersChange: setColumnFilters,
@@ -284,35 +445,8 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
   })
 
 
-  
-
-    // const onSingleDelete =async(id: string, i: number) => {
-    //     setIsLoading(true)
-    //     setSelectedDelete(i)
-    //     const pesertaId = id
-
-    //     await axios.delete(`/api/peserta/${pesertaId}`)
-    //     .then (() => {
-    //         toast.success(AlertMessage.removeSuccess)
-    //         mutate(menu) 
-    //         router.refresh()
-    //     })
-    //     .catch (() =>{
-    //         toast.error(AlertMessage.removeFailed)
-    //     })
-    //     .finally(() => {
-    //         setIsLoading(false)
-    //         setSelectedDelete(null)
-    //         setEditMode(null)
-    //     })
-    
-    // }
-
-
   return (
     <>
-      
-      
         <div 
             className="
                 w-full
@@ -330,8 +464,9 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
             >
                 Menu title
                 <div>
-                  {JSON.stringify(checkAll)}
-                  {/* {JSON.stringify(dataTable)} */}
+                  {/* {JSON.stringify(checkAll)} */}
+                  {/* {JSON.stringify(pesertaEdited)}
+                  {JSON.stringify(pesertaData)} */}
                 </div>
             </h1>
             <div 
@@ -411,47 +546,49 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
             </div>
             
             <div className="rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                            return (
-                                <TableHead key={header.id}>
-                                  {header.isPlaceholder
-                                    ? null
-                                    : flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                   )}
-                                </TableHead>
-                            )
-                            })}
+              <Table>
+                <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => {
+                        return (
+                            <TableHead key={header.id}>
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                )}
+                            </TableHead>
+                        )
+                        })}
+                    </TableRow>
+                    ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length
+                   
+                  ? (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow
+                          key={row.id}
+                          data-state={row.getIsSelected() && "selected"}
+                          
+                        >
+                          {row.getVisibleCells().map((cell) => (
+                              <TableCell 
+                                key={cell.id}
+                              >
+                                  {flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext()
+                                  )}
+                              </TableCell>
+              
+                          ))}
                         </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                          <TableRow
-                            key={row.id}
-                            data-state={row.getIsSelected() && "selected"}
-                           
-                          >
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell 
-                                  key={cell.id}
-                                >
-                                    {flexRender(
-                                      cell.column.columnDef.cell,
-                                      cell.getContext()
-                                    )}
-                                </TableCell>
-                
-                            ))}
-                            </TableRow>
-                        ))
-                        ) : (
+                      ))
+                    ) :(
                         <TableRow>
                           <TableCell
                             colSpan={columns.length}
@@ -460,9 +597,9 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                             No results.
                           </TableCell>
                         </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                      )}
+                </TableBody>
+              </Table>
             </div>
             <div 
               className="
@@ -473,8 +610,8 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                 py-4
             ">
                 <div className="flex-1 text-sm text-muted-foreground">
-                  {table.getFilteredSelectedRowModel().rows.length} / {" "}
-                  {table.getFilteredRowModel().rows.length} ditandai.
+                  {checkAll.length} / {" "}
+                  {dataTable.length} ditandai.
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -514,13 +651,17 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
                 checkAll.length > 0 &&
                 (
                   <Button
+                    disabled={isLoading}
                     variant="destructive"
                     size="sm"
                     onClick={onDeleteChecked}
                   >
-                    <Trash2
-                      className="w-4 h-4"
-                    />
+                    {
+                      isLoading
+                      ? <Loader2 className="h-4 w-4 animate-spin" /> 
+                      : <Trash2 className="w-4 h-4"/>
+                    }
+                    
                   </Button>
                 )
               }

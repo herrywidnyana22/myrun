@@ -13,7 +13,8 @@ export const existValidate = async({
     model, 
     setValidateMsg, 
     validateMsg,
-    setIsError, 
+    setIsError,
+    dataID, 
     isEdit
 }: validationType) => {
 
@@ -25,15 +26,21 @@ export const existValidate = async({
     setValidateMsg(fieldState)
     setIsError(false)
 
-    const respon = await existData(value, model, isEdit)
+    let isExist
+    if(isEdit) {
+        isExist = await existData(value, model, dataID, id)
+    } else{
+        isExist = await existData(value, model, dataID)
+    }
 
-    if(respon.code == '409'){
+    if(isExist){
        error[id] = ValidateMessage.exist
        setIsError(true)
     }
 
     setValidateMsg((prev: any) => ({...prev, ...error}))
 }
+
 
 export const duplicateValidate = (
     e: React.ChangeEvent<HTMLInputElement>,

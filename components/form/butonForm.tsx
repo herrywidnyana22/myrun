@@ -3,6 +3,7 @@
 import { Button } from "../ui/button";
 import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 interface ButtonProps{
     disabled?: boolean
@@ -28,8 +29,14 @@ const ButtonForm = ({
                 `,
                 className
             )}
+            aria-disabled={pending}
         >
-            {children}
+            {
+                pending
+                ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                : children
+            }
+                
         </Button>
     );
 }

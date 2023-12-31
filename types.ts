@@ -87,8 +87,19 @@ export type validationType = {
     setValidateMsg?: any
     validateMsg?: any
     setIsError?: any
-    isEdit: string
+    dataID: string,
+    isEdit?: boolean
 }
+
+// export type validateOnTable = {
+//     value?: string,
+//     id: string,
+//     model: string
+//     setValidateMsg?: any
+//     validateMsg?: any
+//     setIsError?: any
+//     isEdit: string
+// }
 
 export type InputTimeProps = {
   hour?: string

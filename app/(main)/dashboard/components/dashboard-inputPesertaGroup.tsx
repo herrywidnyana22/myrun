@@ -16,7 +16,7 @@ interface GroupInputProps{
 
 const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
 
-    const [isLoading, setIsLoading]  = useState<boolean>(false)
+    const [isLoading, setIsLoading]  = useState(false)
     const [isError, setIsError] = useState(false)
     const [isEmpty, setIsEmpty] = useState(false)
 
@@ -82,8 +82,8 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
     }
 
     const onSubmit = async(formData: FormData) =>{
+        
         setIsLoading(true)
-        // e.preventDefault()
         const noPeserta = Object.fromEntries(formData)
 
         if (isGroupEmpty(noPeserta, setValidateMsg, setIsError)){
@@ -91,13 +91,16 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
             setIsEmpty(true)
             return toast.error("Ada kesalahan...!")
         }
+        
         let responAddPeserta
         try {
             responAddPeserta = await addPeserta(
                 transformData(inputPeserta),
-                kategoriID, 
+                kategoriID,
+                posID, 
                 userPos.posFinish
             )
+
             if(responAddPeserta){
                 toast.success(AlertMessage.addSuccess)
             }
@@ -106,6 +109,7 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
             toast.error(AlertMessage.addFailed)
         } finally{
             setIsLoading(false)
+            reset()
         }
         
 
@@ -153,7 +157,8 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
 
     return (
         <form action={onSubmit}>
-            {JSON.stringify(userPos)}
+            {/* {JSON.stringify({isLoading})}
+            {JSON.stringify({pending})} */}
             <div 
                 className="
                     w-full
@@ -205,7 +210,7 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
                                 isDoubleValidate
                                 onChange={(e) => {
                                     onInputPeserta(e)
-                                    existValidate({e, model: "peserta", setValidateMsg, validateMsg, setIsError, isEdit:posID})
+                                    existValidate({e, model: "peserta", setValidateMsg, validateMsg, setIsError, dataID:posID, isEdit: false})
                                     duplicateValidate(e, inputPeserta, setDuplicatMsg, duplicateMsg, setIsError)
                                     resetValidateMsg()
                                 }}   

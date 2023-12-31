@@ -1,12 +1,14 @@
 import { cn } from "@/lib/utils";
+import { forwardRef } from "react";
 
 interface InputFormProps{
     id: string
     name?: string
     value?: any
+    defaultValue?: any
     disabled?: boolean
     placeholder?: string
-    type?: "text" | "password" | "number"
+    type?: "text" | "password" | "number" | "hidden"
     label?: string
     isError?: boolean
     isWaktu?: boolean
@@ -15,10 +17,10 @@ interface InputFormProps{
     className?: string
     validateMsg?: any
     secondValidateMsg?: any
-    onChange?: (value:any) => void
+    onChange?: (value:any) => void | void
 }
 
-const InputForm = ({
+const InputForm = (forwardRef<HTMLInputElement, InputFormProps>(({
     id,
     name,
     value,
@@ -28,13 +30,12 @@ const InputForm = ({
     disabled,
     isError,
     isWaktu,
-    isDoubleValidate,
     readOnly,
     className, 
     validateMsg,
     secondValidateMsg,
-    onChange
-}: InputFormProps) => {
+    onChange,
+}, ref) => {
 
     
 
@@ -53,7 +54,9 @@ const InputForm = ({
                     text-neutral-700
                 "
             >
+                {/* {JSON.stringify(readOnly ? "true" : "false")} */}
                 <input
+                    ref={ref}
                     id={id}
                     name={name}
                     value={value}
@@ -69,7 +72,7 @@ const InputForm = ({
                         p-2
                         text-sm
                         px-3
-                        pt-3
+                        pt-2
                         font-light
                         rounded-md
                         border-2
@@ -82,7 +85,7 @@ const InputForm = ({
                         className,
                         disabled && "opacity-80 cursor-not-allowed",
                         readOnly 
-                        ? "ring-0 shadow-none"
+                        ? "ring-0 shadow-none border-transparent bg-transparent"
                         : "shadow-sm",
                         isError && (validateMsg && validateMsg[id]
                         ||  secondValidateMsg && secondValidateMsg[id])
@@ -90,31 +93,35 @@ const InputForm = ({
                         
                     )}
                 />
-                <label className={cn(`
-                    absolute
-                    top-2.5
-                    left-2.5
-                    px-1
-                    text-sm
-                    -translate-y-5
-                    origin-[0]
-                    z-10
-                    duration-150
-                    transform
-                    bg-white
-                    pointer-events-none
-                    peer-placeholder-shown:scale-100
-                    peer-placeholder-shown:translate-y-0
-                    peer-focus:scale-75
-                    peer-focus:-translate-y-5`,
-                    isWaktu && "left-1 peer-focus:-translate-y-5",
-                    isError && (validateMsg && validateMsg[id]
-                    ||  secondValidateMsg && secondValidateMsg[id])
-                    && "text-rose-400",
-                    className  
-                )}>
-                    { label }
-                </label>
+                {/* {   !readOnly &&( */}
+                    <label className={cn(`
+                        absolute
+                        top-2.5
+                        left-2.5
+                        px-1
+                        text-sm
+                        origin-[0]
+                        z-10
+                        duration-150
+                        transform`,
+                        !readOnly 
+                        && `
+                            -translate-y-5
+                            bg-white
+                            pointer-events-none
+                            peer-placeholder-shown:scale-100
+                            peer-placeholder-shown:translate-y-0
+                            peer-focus:scale-75
+                            peer-focus:-translate-y-5
+                        `,
+                        isWaktu && !readOnly && "left-1 peer-focus:-translate-y-5",
+                        isError && (validateMsg && validateMsg[id]
+                        ||  secondValidateMsg && secondValidateMsg[id])
+                        && "text-rose-400",
+                        className  
+                    )}>
+                        { label }
+                    </label>
             </div>
             <div className="flex flex-col mt-1">
                 <span className="text-xs text-rose-400">
@@ -138,6 +145,8 @@ const InputForm = ({
         </div>
 
     );
-}
- 
+}))
+
+InputForm.displayName = "InputForm"
+
 export default InputForm;

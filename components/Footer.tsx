@@ -12,6 +12,7 @@ const Footer = () => {
                 p-4
                 border-t
                 bg-slate-100
+                z-10
             "
         >
             <div 

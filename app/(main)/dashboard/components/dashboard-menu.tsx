@@ -1,7 +1,5 @@
 'use client'
 
-import { getPeserta } from "@/actions/peserta/get";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { UserKategori } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
@@ -53,6 +51,7 @@ const MenuDashboard = ({userMenu}: MenuDashboardProps) => {
                         font-semibold
                     "
                 >
+                    {/* {JSON.stringify({userMenu})} */}
                     {
                         userMenu && userMenu.map((item: any, i:number) =>(
                             <div

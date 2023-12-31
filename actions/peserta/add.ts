@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export async function addPeserta(inputPeserta: any, userKategoriID: string, isPosFinish: boolean) {
+export async function addPeserta(inputPeserta: any, userKategoriID: string, userPosID: string, isPosFinish: boolean) {
   
     // const { noPeserta, kategori, inputPeserta } = requestData
     // const { inputPeserta, kategori, isPosFinish} = requestData
@@ -19,7 +19,7 @@ export async function addPeserta(inputPeserta: any, userKategoriID: string, isPo
     // const posId = posItem ? posItem.id : ""
 
     // const userKategoriID = "64929962d0a399795421458f"
-    const userPosID = "64929962d0a3997954214591"
+    // const userPosID = "64929962d0a3997954214591"
 
     let newPesertas
     try {

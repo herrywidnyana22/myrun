@@ -1,11 +1,11 @@
 import GroupInputPeserta from "../components/dashboard-inputPesertaGroup";
-import TableContent from "./components/table";
 import CardGroup from "../components/dashboard-card";
 
 import { getPos, getPosName } from "@/actions/pos/get";
 import { getPeserta } from "@/actions/peserta/get";
 import { Suspense } from "react";
 import { SkeletonDemo } from "./components/table-skeleton";
+import Datatable from "./components/datatable";
 
 interface MainPageProps{
     params:{
@@ -30,7 +30,7 @@ const MainPage = async({params}: MainPageProps) => {
                 fallback={<SkeletonDemo/>}
             >
                 <div className="col-span-2">
-                    <TableContent
+                    <Datatable
                         dataTable={dataPeserta}
                         posData={getPosData}
                         userPos={userPos}
