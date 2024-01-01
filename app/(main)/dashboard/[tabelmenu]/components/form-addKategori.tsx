@@ -3,11 +3,13 @@
 import ButtonForm from "@/components/form/butonForm";
 import InputForm from "@/components/form/inputForm";
 import { duplicateValidate, existValidate, isGroupEmpty, isGroupNotEmpty, requiredValidate, validateRange } from "@/lib/validate";
-import { useEffect, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { addKategori } from "@/actions/kategori/add";
 import { toast } from "sonner";
 import { AlertMessage } from "@/types";
 import { Save } from "lucide-react";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 
  export interface InputPosComponent {
@@ -35,6 +37,7 @@ const AddKategori = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
     
+    const refClose = useRef<ElementRef<"button">>(null)
 
     const handleJumlahPos = (e: any) => {
         resetValidate()
@@ -132,12 +135,8 @@ const AddKategori = () => {
 
         if (isGroupNotEmpty(valuesInput, setValidateMsg, setIsError)){
             setIsLoading(false)
-
             return toast.error("Ada kesalahan...!")
-
         }
-
-        console.log({valuesInput})
         
         const data: AddKategoriDataFormat = {
             namaPos: inputPos,
@@ -149,6 +148,7 @@ const AddKategori = () => {
             const responAddKategori = await addKategori(data)
             if(responAddKategori){
                 toast.success(AlertMessage.addSuccess)
+                refClose.current?.click()
             }
         } catch (error: any) {
             toast.success(error.message)
@@ -170,7 +170,7 @@ const AddKategori = () => {
         <form
             action={onSubmit}
         >
-            <div className="mb-5">
+            <div className="mb-2">
             {/* {JSON.stringify({isError})} */}
             </div>
             <div
@@ -231,7 +231,7 @@ const AddKategori = () => {
                     grid-cols-2 
                     gap-x-6
                     gap-y-2
-                    pt-5
+                    pt-2
                     overflow-x-auto
                 "
             >
@@ -273,13 +273,31 @@ const AddKategori = () => {
                 }
                 
             </div>
-            <ButtonForm
-                className="float-right mt-6"
-                disabled={isLoading || isError}
-            >
-                <Save className="w-4 h-5"/>
-                Simpan
-            </ButtonForm>
+            <DialogFooter>
+                <div
+                    className="
+                        flex
+                        w-full
+                        justify-between
+                        items-center
+                        mt-4
+                    "
+                >
+                    <DialogClose ref={refClose} asChild>
+                        <Button type="button" variant="secondary">
+                            Close
+                        </Button>
+                    </DialogClose>
+                    <ButtonForm
+                        disabled={isLoading || isError}
+                        icon={<Save className="w-4 h-5"/>}
+                    >
+                        Simpan
+                    </ButtonForm>
+
+                </div>
+            </DialogFooter>
+            
         </form>
     );
 }

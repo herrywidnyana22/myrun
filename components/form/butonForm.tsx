@@ -8,15 +8,18 @@ import { Loader2 } from "lucide-react";
 interface ButtonProps{
     disabled?: boolean
     className?: string
-    varian?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "primary"
     children: React.ReactNode
+    varian?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "primary"
+    icon?: any
 }
 
 const ButtonForm = ({
     children,
     disabled,
     className,
-    varian = "primary"
+    varian = "primary",
+    icon
+
 }: ButtonProps) => {
     const { pending } = useFormStatus()
     return (
@@ -34,8 +37,9 @@ const ButtonForm = ({
             {
                 pending
                 ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
-                : children
+                : icon
             }
+            {children}
                 
         </Button>
     );

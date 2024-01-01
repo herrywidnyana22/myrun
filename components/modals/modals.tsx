@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog"
 
 import { Button } from "../ui/button";
+import { useFormStatus } from "react-dom";
 
 interface ModalProps{
     trigger?: any
@@ -26,6 +27,7 @@ const DialogModal = ({
     desc,
     content
 }:ModalProps) => {
+    
     return (
         <Dialog>
             <DialogTrigger asChild>

@@ -200,9 +200,6 @@ export const validateRange = (
     setValidateMsg(fieldState)
     setIsError(false)
 
-    console.log({value})
-    console.log({id})
-
     if(max && parseInt(value) > max) {
         error[id] = `Maksimal ${max}`
         setIsError(true)
