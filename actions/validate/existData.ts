@@ -109,11 +109,6 @@ export async function existData(
                         },
                     })
                 } else {
-                    console.log("false")
-                    console.log({data})
-                    console.log({dataID})
-                    console.log({pesertaID})
-                    console.log({model})
                     respon = await db.peserta.findMany({
                         select:{
                             id: true,

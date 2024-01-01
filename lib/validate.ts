@@ -167,24 +167,21 @@ export const isGroupNotEmpty  = (
     setIsError: any
 ) =>{
     const error: ErrorMessages  = {}
-    let isEmpty = true
-
-    for (const field in data){
-        if(data[field] !== '' && data[field] !== null) {
-            isEmpty = false
-        } else {
-            error[field] = ValidateMessage.required
-            isEmpty = true
+    let isEmpty = false
+    for (const key in data) {
+        if (data.hasOwnProperty(key) && (data[key] === null || data[key].trim() === "")){
+            error[key] = ValidateMessage.required
         }
+    
     }
 
-    if(isEmpty) {
-        setValidateMsg(error)
+    if(Object.keys(error).length > 0){
         setIsError(true)
+        setValidateMsg(error)
         return true
-    } else {
-        return false
     }
+
+    return false
 }
 
 export const validateRange = (

@@ -2,12 +2,8 @@
 
 import ButtonForm from "@/components/form/butonForm";
 import InputForm from "@/components/form/inputForm";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { duplicateValidate, existValidate, isGroupEmpty, isGroupNotEmpty, requiredValidate, validateRange } from "@/lib/validate";
 import { useEffect, useState } from "react";
-import GroupInputPeserta from "../../components/dashboard-inputPesertaGroup";
 import { addKategori } from "@/actions/kategori/add";
 import { toast } from "sonner";
 import { AlertMessage } from "@/types";
@@ -38,8 +34,6 @@ const AddKategori = () => {
 
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
-    const [isFieldErrors, setIsFieldErrors] = useState(false)
-    const [isEmpty, setIsEmpty] = useState(false)
     
 
     const handleJumlahPos = (e: any) => {
@@ -138,14 +132,11 @@ const AddKategori = () => {
 
         if (isGroupNotEmpty(valuesInput, setValidateMsg, setIsError)){
             setIsLoading(false)
-            setIsEmpty(true)
-            
-            console.log("group true")
 
             return toast.error("Ada kesalahan...!")
 
         }
-        
+
         console.log({valuesInput})
         
         const data: AddKategoriDataFormat = {
@@ -159,15 +150,11 @@ const AddKategori = () => {
             if(responAddKategori){
                 toast.success(AlertMessage.addSuccess)
             }
-        } catch (error) {
-            toast.success(AlertMessage.addFailed)
+        } catch (error: any) {
+            toast.success(error.message)
         } finally{
             setIsLoading(false)
         }
-        
-    }
-
-    const checkIsEmpty =  () =>{
         
     }
 
@@ -185,15 +172,12 @@ const AddKategori = () => {
         >
             <div className="mb-5">
             {/* {JSON.stringify({isError})} */}
-            {JSON.stringify({validateMsg})}
-            {JSON.stringify({duplicateMsg})}
             </div>
             <div
                 className="
                     flex
                     gap-2
-                    pt-2
-                    pb-4
+                    py-2
                 "
             >
                 <div className="w-2/3">
