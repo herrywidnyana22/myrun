@@ -8,6 +8,30 @@ interface ErrorMessages {
   [key: string]: string;
 }
 
+
+export const requiredValidate = (
+    e: React.ChangeEvent<HTMLInputElement>, 
+    setValidateMsg: any, 
+    validateMsg: any,
+    setIsError: any
+) => {
+
+    const { value, id } = e.target
+    let error: ErrorMessages  = {}
+
+    const fieldState = {...validateMsg}
+    delete fieldState[id]
+    setValidateMsg(fieldState)
+    setIsError(false)
+
+    if(value === ""  || value === null) {
+        error[id] = ValidateMessage.required
+        setIsError(true)
+    }
+
+    setValidateMsg((prev: any) => ({...prev, ...error}))
+}
+
 export const existValidate = async({ 
     e, 
     model, 
@@ -28,9 +52,9 @@ export const existValidate = async({
 
     let isExist
     if(isEdit) {
-        isExist = await existData(value, model, dataID, id)
+        isExist = await existData(value, model!, dataID, id)
     } else{
-        isExist = await existData(value, model, dataID)
+        isExist = await existData(value, model!, dataID)
     }
 
     if(isExist){
@@ -72,7 +96,7 @@ export const duplicateValidate = (
     // grouping data
 
     const posValues = updateData.map((field: any) => {
-        if (name.includes("nopeserta")){
+        if (name.includes("nopeserta") || name.includes("namaPos")){
             return field[field.id]
         }
 
@@ -85,12 +109,11 @@ export const duplicateValidate = (
 
     updateData.forEach((field: any) => {
         let fieldValue = ""
-        if (name.includes("nopeserta")){
+        if (name.includes("nopeserta") || name.includes("namaPos")){
             fieldValue =  field[field.id]
         } else {
             fieldValue =  field[name]
         }
-
        
 
         if (duplicateValues.includes(fieldValue)) {
@@ -118,6 +141,7 @@ export const isGroupEmpty = (
 ) =>{
     const  error: ErrorMessages  = {}
     let isEmpty = true
+
     for (const field in data){
         if(data[field] !== '' && data[field] !== null) {
             return isEmpty = false
@@ -135,5 +159,69 @@ export const isGroupEmpty = (
         return false
     }
 
+}
+
+export const isGroupNotEmpty  = (
+    data: any,
+    setValidateMsg: any,
+    setIsError: any
+) =>{
+    const error: ErrorMessages  = {}
+    let isEmpty = true
+
+    for (const field in data){
+        if(data[field] !== '' && data[field] !== null) {
+            isEmpty = false
+        } else {
+            error[field] = ValidateMessage.required
+            isEmpty = true
+        }
+    }
+
+    if(isEmpty) {
+        setValidateMsg(error)
+        setIsError(true)
+        return true
+    } else {
+        return false
+    }
+}
+
+export const validateRange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setValidateMsg: any,
+    validateMsg: any,
+    setIsError: any,
+    min?: number,
+    max?: number,
+)=>{
+    const { value, id } = e.target
+    let error: ErrorMessages  = {}
+
+    const fieldState = {...validateMsg}
+    delete fieldState[id]
+    setValidateMsg(fieldState)
+    setIsError(false)
+
+    console.log({value})
+    console.log({id})
+
+    if(max && parseInt(value) > max) {
+        error[id] = `Maksimal ${max}`
+        setIsError(true)
+        setValidateMsg((prev: any) => ({...prev, ...error}))
+        return true
+    }
+
+    if(min && parseInt(value) < min) {
+        error[id] = `Minimal ${min}`
+        setIsError(true)
+        setValidateMsg((prev: any) => ({...prev, ...error}))
+        return true
+    }
+
+   
+    return false
+    
 }
 

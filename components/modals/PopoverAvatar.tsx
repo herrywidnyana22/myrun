@@ -5,23 +5,42 @@ import Avatar from "../Avatar";
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { X } from "lucide-react";
+import { ListTodo, LogOut, UserPlus, X } from "lucide-react";
+import DialogModal from "./modals";
+import AddKategori from "@/app/(main)/dashboard/[tabelmenu]/components/form-addKategori";
 
 const PopoverAvatar = () => {
+
+    const menuAddKategori = (
+        <>
+            <ListTodo
+                className="w-5 h-5"
+            />
+            <p>Tambahkan Kategori</p>
+        </>
+    )
+    const menuAddUser = (
+        <>
+            <UserPlus
+                className="w-5 h-5"
+            />
+            <p>Tambahkan Panitia</p>
+        </>
+    )
+
     return (
         <Popover>
             <PopoverTrigger asChild>
                 <div role="button">
                     <Avatar/>
                 </div>
-                {/*  */}
             </PopoverTrigger>
             <PopoverContent
                 side="bottom"
                 align="end"
                 className="
                     relative 
-                    p-4 
+                    p-0
                     mt-2
                 "
             >
@@ -30,9 +49,18 @@ const PopoverAvatar = () => {
                         pb-3
                         font-medium
                         text-neutral-600
+                        p-4
                     "
                 >
-                    Login to Dashboard
+                    <h1 
+                        className="
+                            font-bold
+                            text-sky-600
+                        "
+                    
+                    >
+                        Admin
+                    </h1>
                 </div>
                 <Separator/>
                 <PopoverClose asChild>
@@ -55,8 +83,31 @@ const PopoverAvatar = () => {
                         />
                     </Button>
                 </PopoverClose>
-                <div>
-                    modal content
+                <DialogModal
+                    trigger={menuAddKategori}
+                    title="Tambah Kategori"
+                    desc="Tambahkan kategori baru lomba dan juga pos lomba"
+                    content={<AddKategori/>}
+                />
+                <DialogModal
+                    trigger={menuAddUser}
+                />
+                <Separator/>
+                <div
+                    role="button"
+                    className="
+                        flex
+                        gap-3
+                        items-center
+                        p-4
+                        transition
+                        hover:text-rose-400
+                    "
+                >
+                    <LogOut
+                        className="w-5 h-5"
+                    />
+                    <p>Keluar</p>
                 </div>
             </PopoverContent>
         </Popover>

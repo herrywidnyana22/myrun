@@ -8,7 +8,7 @@ interface InputFormProps{
     defaultValue?: any
     disabled?: boolean
     placeholder?: string
-    type?: "text" | "password" | "number" | "hidden"
+    type?: "text" | "password" | "number" | "hidden" | "radio"
     label?: string
     isError?: boolean
     isWaktu?: boolean

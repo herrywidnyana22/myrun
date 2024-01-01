@@ -1,7 +1,9 @@
 'use client'
 
+import InputForm from "@/components/form/inputForm"
+import OpsiAction from "./opsiAction"
+
 import { ArrowUpDown, Check, CheckCircle2, ChevronDown, Loader2, Minus, MoreHorizontal, Pencil, Trash2, X } from "lucide-react"
- 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -26,12 +28,8 @@ import { ElementRef, createRef, useCallback, useEffect, useRef, useState } from 
 import { AlertMessage, PesertaData, posData } from "@/types"
 import { checkedDelete, singleDeleted } from "@/actions/peserta/delete"
 import { toast } from "sonner"
-import OpsiAction from "./opsiAction"
-import InputForm from "@/components/form/inputForm"
 import { existValidate } from "@/lib/validate"
-import React from "react"
 import { editPeserta } from "@/actions/peserta/edit"
-import { string } from "zod"
 
 
 interface TableContentProps{
@@ -138,8 +136,6 @@ const Datatable = ({dataTable, userPos, posData}: TableContentProps) => {
     const handleInputPeserta = (e: React.ChangeEvent<HTMLInputElement>, noPeserta: string) =>{
         // dapatkan no peserta yg diinput
         const recentNoPeserta = refInput.current[pesertaEdited]?.value
-
-        // if (recentNoPeserta !== noPeserta ){
             existValidate({e, model: "peserta", setValidateMsg, validateMsg, setIsError, dataID:posID, isEdit: true})
             resetValidateMsg()
         // }
@@ -200,7 +196,6 @@ const Datatable = ({dataTable, userPos, posData}: TableContentProps) => {
         setCheckAll([])
         setPesertaData(dataTable)
     }, [dataTable])
-
 
 
     return (

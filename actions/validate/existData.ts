@@ -5,7 +5,7 @@ import { db } from "@/lib/db"
 export async function existData(
     data: any, 
     model:string, 
-    dataID:string, 
+    dataID?:string, 
     pesertaID?: string 
 ){
 
@@ -98,7 +98,7 @@ export async function existData(
                                     noPeserta: data
                                 }, {
                                     posId:{
-                                        hasSome: [dataID]
+                                        hasSome: [dataID!]
                                     }
                                 }, {
                                     id:{
@@ -126,7 +126,7 @@ export async function existData(
                                     noPeserta: data
                                 }, {
                                     posId:{
-                                        hasSome: [dataID]
+                                        hasSome: [dataID!]
                                     }
                                 }
                             ]
@@ -146,6 +146,10 @@ export async function existData(
         if(respon.length === 0) {
             return false
         }
+
+        console.log( {data})
+        console.log( {model})
+        console.log( `Respon length : ${respon.length}`)
         
         return true
         

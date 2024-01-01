@@ -1,13 +1,7 @@
 import Logo from "@/components/logo";
 
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { X } from "lucide-react";
-import Login from "@/app/(landingPage)/components/Login";
-import Avatar from "./Avatar";
 import PopoverLogin from "./modals/popoverLogin";
-import PopoverAvatar from "./modals/PopoverAvatar";
+import PopoverAvatar from "./modals/popoverAvatar";
 
 const Navbar = () => {
     const userSession = true
@@ -45,8 +39,11 @@ const Navbar = () => {
                         items-center
                     "
                 >
-                    <PopoverLogin/>
-                    <PopoverAvatar/>
+                    {
+                        !userSession 
+                        ? <PopoverLogin/> 
+                        : <PopoverAvatar/>
+                    }
                     
                 </div>
 

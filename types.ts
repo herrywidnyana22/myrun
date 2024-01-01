@@ -83,11 +83,11 @@ export const AlertMessage = {
 
 export type validationType = {
     e: React.ChangeEvent<HTMLInputElement>
-    model: string
+    model?: string
     setValidateMsg?: any
     validateMsg?: any
     setIsError?: any
-    dataID: string,
+    dataID?: string,
     isEdit?: boolean
 }
 

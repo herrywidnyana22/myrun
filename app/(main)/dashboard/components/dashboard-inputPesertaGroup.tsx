@@ -157,8 +157,8 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
 
     return (
         <form action={onSubmit}>
-            {/* {JSON.stringify({isLoading})}
-            {JSON.stringify({pending})} */}
+            {/* {JSON.stringify({isLoading})} */}
+            {JSON.stringify({inputPeserta})}
             <div 
                 className="
                     w-full

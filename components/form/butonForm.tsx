@@ -26,7 +26,7 @@ const ButtonForm = ({
             size="sm"
             variant={varian}
             className={cn(`
-                `,
+                flex items-center gap-2`,
                 className
             )}
             aria-disabled={pending}
