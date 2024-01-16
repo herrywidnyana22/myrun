@@ -80,8 +80,6 @@ const Datatable = ({dataTable, userPos, posData}: TableContentProps) => {
         } else {
             setCheckAll((prevItems) => prevItems.filter((id) => id !== itemId));
         }
-
-        console.log({value})
     }
     
     // use patch because bring more than 1 iD

@@ -175,9 +175,6 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
   const handleNoPesertaChange = async (e: any) => {
     e.preventDefault();
     const { value, name } = e.target;
-    console.log("Before setNoPesertaTest");
-    await setNoPesertaTest(value);
-    console.log("After setNoPesertaTest");
     const inputElement = refInput.current[pesertaEdited];
     inputElement?.focus();
   };

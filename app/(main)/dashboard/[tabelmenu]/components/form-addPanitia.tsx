@@ -15,12 +15,14 @@ import { toast } from "sonner";
 import InputForm from "@/components/form/inputForm";
 import ButtonForm from "@/components/form/butonForm";
 import { AlertMessage } from "@/types";
+import DialogModal from "@/components/modals/modals";
+import AddKategori from "./form-addKategori";
 
 const AddPanitia = () => {
     const [kategoriData, setKategoriData] = useState<any>(null)
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [isAdminChecked, setAdminChecked] = useState<boolean>(false)
+    const [isAdminChecked, setAdminChecked] = useState<boolean>(true)
     const [selectedPos, setSelectedPos] = useState<any[]>([])
     const [validateMsg, setValidateMsg] = useState()
     const [pass, setPass] = useState("")
@@ -49,8 +51,6 @@ const AddPanitia = () => {
         setIsLoading(true)
     
         const data = formatForm(formData)
-        // const data = Object.fromEntries(formData)
-        console.log({data})
 
         try {
             const responAddPanitia = await addPanitia(data)
@@ -60,7 +60,6 @@ const AddPanitia = () => {
             } else {
                 toast.success(responAddPanitia.msg)
             }
-            console.log({responAddPanitia})
         } catch (error: any) {
             toast.error(error)
         } finally{
@@ -71,6 +70,17 @@ const AddPanitia = () => {
     const handleChange = () =>{
         setAdminChecked(!isAdminChecked)
     }
+
+    const buttonAddKategori = (
+        <Button 
+            size="sm"
+            type="button"
+            variant="secondary"
+            className="hover:bg-neutral-500/20"
+        >
+                Tambah Kategori
+        </Button>
+    )
     useEffect(() =>{
         const kategoriData = async() =>{
             try {
@@ -182,6 +192,7 @@ const AddPanitia = () => {
                                 value='ADMIN'
                                 type="radio"
                                 name="role"
+                                defaultChecked={true}
                                 disabled={isLoading}
                                 onChange={handleChange}
                                 className="h-4 w-4"
@@ -200,7 +211,6 @@ const AddPanitia = () => {
                                 value='PANITIA'
                                 type="radio"
                                 name="role"
-                                defaultChecked={true}
                                 disabled={isLoading}
                                 onChange={handleChange}
                                 className="h-4 w-4"
@@ -245,59 +255,87 @@ const AddPanitia = () => {
                     : "border-rose-500 "
                     
                 )}>
-                    <div className="
-                        w-full
-                        grid
-                        grid-cols-2
-                        gap-6
-                    ">
-                    {
-                        kategoriData && kategoriData.map((kategori: any, i: number) =>(
-                        <div key={i} className="flex flex-col">
-                            <CheckboxForm
-                                // name dan value tidak perlu, 
-                                // karnea akan diambil dari radio pos
+                {
+                    kategoriData
+                    ?  
+                        <div className="
+                            w-full
+                            grid
+                            grid-cols-2
+                            gap-6
+                        ">
+                     
+                            { 
+                                kategoriData.map((kategori: any, i: number) =>(
+                                    <div key={i} className="flex flex-col">
+                                        <CheckboxForm
+                                            // name dan value tidak perlu, 
+                                            // karnea akan diambil dari radio pos
 
-                                // value={kategori.id}
-                                // name= "namaKategori"
-                                checked={
-                                    selectedPos.some((obj) => 
-                                        Object.keys(obj).includes(kategori.id)
-                                    )
-                                } 
-                                id="namaKategori"
-                                type="checkbox"
-                                label={kategori.namaKategori}
-                                disabled={isLoading}
-                                onChange={() => onRemovePos(kategori.id)}
-                            />
-                            <div className="ml-6">
-                            {
-                                
-                                kategori.pos.map((pos: any, index: number) =>(
-                                 <CheckboxForm
-                                        key={index}
-                                        id="namaPos"
-                                        value={pos.id}
-                                        checked={
-                                            selectedPos.some(obj => 
-                                                Object.values(obj).includes(pos.id))
-                                        } 
-                                        name={kategori.id}
-                                        type="radio"
-                                        label={pos.namaPos}
-                                        disabled={isLoading || (pos.panitiaId !== null)}
-                                        onChange={() => onSelectedPos(kategori.id, pos.id)}
-                                    />
+                                            // value={kategori.id}
+                                            // name= "namaKategori"
+                                            checked={
+                                                selectedPos.some((obj) => 
+                                                    Object.keys(obj).includes(kategori.id)
+                                                )
+                                            } 
+                                            id="namaKategori"
+                                            type="checkbox"
+                                            label={kategori.namaKategori}
+                                            disabled={isLoading}
+                                            onChange={() => onRemovePos(kategori.id)}
+                                        />
+                                        <div className="ml-6">
+                                        {
+                                            
+                                            kategori.pos.map((pos: any, index: number) =>(
+                                            <CheckboxForm
+                                                    key={index}
+                                                    id="namaPos"
+                                                    value={pos.id}
+                                                    checked={
+                                                        selectedPos.some(obj => 
+                                                            Object.values(obj).includes(pos.id))
+                                                    } 
+                                                    name={kategori.id}
+                                                    type="radio"
+                                                    label={pos.namaPos}
+                                                    disabled={isLoading || (pos.panitiaId !== null)}
+                                                    onChange={() => onSelectedPos(kategori.id, pos.id)}
+                                                />
+                                            ))
+                                        }
+                                        </div>
+                                    </div>
                                 ))
+                                
                             }
-                            </div>
+                            </div> 
+
+                        : <div 
+                            className="
+                                w-full 
+                                flex
+                                flex-col
+                                gap-4
+                                justify-center 
+                                items-center 
+                            ">
+                                <span className="text-neutral-500 text-sm">Belum ada kategori</span>
+                                
+
+                                <DialogModal
+                                    trigger={buttonAddKategori}
+                                    title="Tambah Kategori"
+                                    desc="Tambahkan kategori baru lomba dan juga pos lomba"
+                                    content={<AddKategori/>}
+                                    className="hover:bg-transparent"
+                                />
                         </div>
-                        ))
+                    
                     }
 
                         
-                    </div>
                     
                 </div>  
             </>

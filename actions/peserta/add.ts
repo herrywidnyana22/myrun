@@ -85,12 +85,9 @@ export async function addPeserta(inputPeserta: any, userKategoriID: string, user
             }
 
         }))
-
-        console.log(newPesertas)
         
-    } catch (error) {
-        console.log(error)
-        return newPesertas = error
+    } catch (error: any) {
+        return newPesertas = error.message
     }
 
     revalidatePath("/dashboard/")

@@ -85,7 +85,6 @@ export async function existData(
     
             case "peserta":
                 if(pesertaID){
-                    console.log("true")
                     respon = await db.peserta.findMany({
                         select:{
                             id: true,
@@ -141,16 +140,12 @@ export async function existData(
         if(respon.length === 0) {
             return false
         }
-
-        console.log( {data})
-        console.log( {model})
-        console.log( `Respon length : ${respon.length}`)
         
         return true
         
     } catch (error) {
         return{
-            error: error
+            msg: error
         }
     }
     

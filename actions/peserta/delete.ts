@@ -6,8 +6,6 @@ import { revalidatePath } from "next/cache"
 export async function singleDeleted(pesertaID: string) {
     let deletePeserta
     try {
-        console.log(pesertaID)
-
 
         const cekNoPeserta =  await db.peserta.findFirst({
             where: {

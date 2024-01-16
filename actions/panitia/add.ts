@@ -22,15 +22,6 @@ export async function addPanitia(data: any){
         let {namaKategori, posId} = data
         let addPanitia
 
-        console.log(data)
-        console.log(data.nama)
-        console.log({username})
-        console.log({password})
-        console.log({confPassword})
-        console.log({role})
-        console.log({namaKategori})
-        console.log({posId})
-        
         
         if (!nama || !username || !password || !namaKategori || !posId) throw new Error('Missing info')
         
