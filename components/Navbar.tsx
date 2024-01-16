@@ -2,9 +2,11 @@ import Logo from "@/components/logo";
 
 import PopoverLogin from "./modals/popoverLogin";
 import PopoverAvatar from "./modals/popoverAvatar";
+import { adminUser } from "@/app/initUser";
+import { Role } from "@prisma/client";
 
 const Navbar = () => {
-    const userSession = true
+    
     return ( 
         <nav 
             className="
@@ -40,9 +42,9 @@ const Navbar = () => {
                     "
                 >
                     {
-                        !userSession 
-                        ? <PopoverLogin/> 
-                        : <PopoverAvatar/>
+                        adminUser.role === Role.ADMIN 
+                        ? <PopoverAvatar/>
+                        : <PopoverLogin/> 
                     }
                     
                 </div>

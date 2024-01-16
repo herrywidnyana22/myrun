@@ -8,6 +8,8 @@ import { Separator } from "../ui/separator";
 import { ListTodo, LogOut, UserPlus, X } from "lucide-react";
 import DialogModal from "./modals";
 import AddKategori from "@/app/(main)/dashboard/[tabelmenu]/components/form-addKategori";
+import AddPanitia from "@/app/(main)/dashboard/[tabelmenu]/components/form-addPanitia";
+import { adminUser } from "@/app/initUser";
 
 const PopoverAvatar = () => {
 
@@ -59,7 +61,7 @@ const PopoverAvatar = () => {
                         "
                     
                     >
-                        Admin
+                        {adminUser.role}
                     </h1>
                 </div>
                 <Separator/>
@@ -91,6 +93,9 @@ const PopoverAvatar = () => {
                 />
                 <DialogModal
                     trigger={menuAddUser}
+                    title="Tambah Panitia"
+                    desc="Tambahkan Panitia yg berjaga di pos lomba"
+                    content={<AddPanitia/>}
                 />
                 <Separator/>
                 <div

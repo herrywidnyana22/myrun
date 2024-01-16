@@ -8,11 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -93,14 +89,14 @@ const Datatable = ({dataTable, userPos, posData}: TableContentProps) => {
         setIsLoading(true)
 
         try {
-        const responDelete = await checkedDelete(checkAll, posID)
-        if(responDelete){
-            toast.success(AlertMessage.removeSuccess)
-        }
+            const responDelete = await checkedDelete(checkAll, posID)
+            if(responDelete){
+                toast.success(AlertMessage.removeSuccess)
+            }
         } catch (error) {
-        toast.error(AlertMessage.removeFailed)
+            toast.error(AlertMessage.removeFailed)
         } finally{
-        setIsLoading(false)
+            setIsLoading(false)
         }
     }
 

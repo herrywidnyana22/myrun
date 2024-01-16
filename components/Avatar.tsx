@@ -1,5 +1,6 @@
 'use client'
 
+import { adminUser } from "@/app/initUser"
 import Image from "next/image"
 
 interface AvatarProps{
@@ -16,7 +17,7 @@ const Avatar = ({userImage} :AvatarProps) => {
                 "
             
             >
-                Herry Widnyana
+                {adminUser.namaPanitia}
             </h1>
             <div 
                 className="

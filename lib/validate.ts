@@ -8,7 +8,6 @@ interface ErrorMessages {
   [key: string]: string;
 }
 
-
 export const requiredValidate = (
     e: React.ChangeEvent<HTMLInputElement>, 
     setValidateMsg: any, 
@@ -219,3 +218,100 @@ export const validateRange = (
     
 }
 
+
+export const passValidate = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setValidateMsg: any, 
+    validateMsg: any,
+    setIsError: any
+) => {
+
+    const { value, id } = e.target
+    let error: ErrorMessages  = {}
+
+    const fieldState = {...validateMsg}
+    delete fieldState[id]
+    setValidateMsg(fieldState)
+    setIsError(false)
+
+
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+
+    if (value.length < minLength) {
+        error[id] = ValidateMessage.passMin
+        setIsError(true)
+        return setValidateMsg((prev: any) => ({...prev, ...error}))
+    }
+
+    if (!hasUpperCase || !hasLowerCase) {
+        error[id] = ValidateMessage.passUpcase
+        setIsError(true)
+        return setValidateMsg((prev: any) => ({...prev, ...error}))
+    }
+
+    if (!hasNumber) {
+        error[id] = ValidateMessage.passNumber
+        setIsError(true)
+        return setValidateMsg((prev: any) => ({...prev, ...error}))
+    }
+
+    
+}
+export const confirmPassValidate = ( 
+    e: React.ChangeEvent<HTMLInputElement>,
+    pass: string, 
+    setValidateMsg: any, 
+    validateMsg: any,
+    setIsError: any
+) => {
+
+    const { value, id } = e.target
+    let error: ErrorMessages  = {}
+
+    const fieldState = {...validateMsg}
+    delete fieldState[id]
+    setValidateMsg(fieldState)
+    setIsError(false)
+
+    if (value !== pass) {
+        error[id] = ValidateMessage.notSame
+        setIsError(true)
+    }
+    
+    console.log(`value : ${value}`)
+    console.log(`pass : ${pass}`)
+
+    setValidateMsg((prev: any) => ({...prev, ...error}))
+
+    
+    
+}
+
+
+export const usernameFormatValidate = ( 
+    e: React.ChangeEvent<HTMLInputElement>,
+    setValidateMsg: any, 
+    validateMsg: any,
+    setIsError: any
+) => {
+
+    const { value, id } = e.target
+    let error: ErrorMessages  = {}
+    const usernameRegex = /^[a-zA-Z0-9_]{4,}$/
+    const isValidUsername = usernameRegex.test(value)
+
+    
+    const fieldState = {...validateMsg}
+    delete fieldState[id]
+    setValidateMsg(fieldState)
+    setIsError(false)
+
+    if(!isValidUsername) {
+        error[id] = ValidateMessage.invalid
+        setIsError(true)
+    }
+    setValidateMsg((prev: any) => ({...prev, ...error}))
+}

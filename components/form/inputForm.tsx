@@ -1,24 +1,8 @@
 import { cn } from "@/lib/utils";
+import { InputFormProps } from "@/types";
 import { forwardRef } from "react";
 
-interface InputFormProps{
-    id: string
-    name?: string
-    value?: any
-    defaultValue?: any
-    disabled?: boolean
-    placeholder?: string
-    type?: "text" | "password" | "number" | "hidden" | "radio"
-    label?: string
-    isError?: boolean
-    isWaktu?: boolean
-    isDoubleValidate?: boolean
-    readOnly?: boolean
-    className?: string
-    validateMsg?: any
-    secondValidateMsg?: any
-    onChange?: (value:any) => void | void
-}
+
 
 const InputForm = (forwardRef<HTMLInputElement, InputFormProps>(({
     id,

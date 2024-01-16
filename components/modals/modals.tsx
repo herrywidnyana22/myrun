@@ -2,17 +2,12 @@
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-
-import { Button } from "../ui/button";
-import { useFormStatus } from "react-dom";
 
 interface ModalProps{
     trigger?: any

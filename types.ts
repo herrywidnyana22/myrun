@@ -112,3 +112,24 @@ export type TimeFormat = {
     id: string;
     [key: string]: string | InputTimeProps[]
 }
+
+export interface InputFormProps{
+    id: string
+    name?: string
+    value?: any
+    defaultValue?: any
+    disabled?: boolean
+    placeholder?: string
+    type?: "text" | "password" | "number" | "hidden" | "radio" | "checkbox"
+    label?: string
+    isError?: boolean
+    isWaktu?: boolean
+    isDoubleValidate?: boolean
+    readOnly?: boolean
+    className?: string
+    validateMsg?: any
+    secondValidateMsg?: any
+    onChange?: (value:any) => void | void
+    checked?: boolean
+    defaultChecked?:boolean
+}

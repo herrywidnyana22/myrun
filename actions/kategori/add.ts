@@ -66,7 +66,7 @@ export async function addKategori(data:AddKategoriDataFormat) {
         
     } catch (error: any) {
         return{
-            error: error
+            msg: error
         }
     }
 

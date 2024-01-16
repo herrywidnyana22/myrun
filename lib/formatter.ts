@@ -8,3 +8,33 @@ export function formatURL(value:string) {
 
     return capitalizeData
 }
+
+export function formatForm(formData: any) {
+    const toJsonObject = Object.fromEntries(formData)
+    const JSONData = JSON.stringify(toJsonObject)
+
+    // const formData = data
+
+    const formDataObject: { [key: string]: any } = {}
+    for (const [key, value] of formData.entries()) {
+        if (
+            key === 'nama' || 
+            key === 'username' || 
+            key === 'password' || 
+            key === 'confPassword' ||
+            key === 'role'
+        ) {
+            formDataObject[key] = value;
+        } else {
+            if (formDataObject['namaKategori'] === undefined) {
+                formDataObject['namaKategori'] = [];
+                formDataObject['posId'] = [];
+            }
+            formDataObject['namaKategori'].push(key);
+            formDataObject['posId'].push(value);
+        }
+    }
+
+    // return JSON.stringify(formDataObject);
+    return formDataObject;
+}
