@@ -124,7 +124,6 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
           setCheckAll((prevItems) => prevItems.filter((id) => id !== itemId));
       }
 
-      console.log({value})
   }
   
   // use patch because bring more than 1 iD
@@ -180,13 +179,11 @@ const TableContent = ({dataTable, userPos, posData}: TableContentProps) => {
   };
 
   function anyfunction(value: string) {
-    console.log({value});
   }
 
   const onSave = async(formData: FormData) =>{
     const noPeserta = refInput.current[pesertaEdited]?.value
-    // existValidateOnTable({value:noPeserta, id:pesertaEdited, model: "peserta", setValidateMsg, validateMsg, setIsError, isEdit:posID})
-    console.log({noPeserta})
+    // existValidateOnTable({
   }
 
   const onCancelEdit = () =>{

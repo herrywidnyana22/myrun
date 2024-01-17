@@ -112,9 +112,6 @@ const GroupInputPeserta = ({userKategori, userPos}:GroupInputProps) => {
             reset()
         }
         
-
-        console.log(responAddPeserta)
-        
     }
 
     const transformData = (data: TimeFormat[]): any[] =>{

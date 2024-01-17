@@ -127,8 +127,6 @@ export async function existData(
                         },
                     })
                 }
-
-                console.log({respon})
                     
             break
                 

@@ -280,9 +280,6 @@ export const confirmPassValidate = (
         error[id] = ValidateMessage.notSame
         setIsError(true)
     }
-    
-    console.log(`value : ${value}`)
-    console.log(`pass : ${pass}`)
 
     setValidateMsg((prev: any) => ({...prev, ...error}))
 

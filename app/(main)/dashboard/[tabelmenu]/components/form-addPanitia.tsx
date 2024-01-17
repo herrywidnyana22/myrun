@@ -26,6 +26,7 @@ const AddPanitia = () => {
     const [selectedPos, setSelectedPos] = useState<any[]>([])
     const [validateMsg, setValidateMsg] = useState()
     const [pass, setPass] = useState("")
+    const [confPass, setConfPass] = useState("")
 
     const refClose = useRef<ElementRef<"button">>(null)
     
@@ -107,7 +108,7 @@ const AddPanitia = () => {
             className="mt-4"
         >
             {/* {JSON.stringify({isLoading})} */}
-            {/* {JSON.stringify({kategoriData})} */}
+            {JSON.stringify(validateMsg)}
             <div
                 className="
                     grid 
@@ -148,6 +149,8 @@ const AddPanitia = () => {
                     disabled={isLoading}
                     validateMsg={validateMsg}
                     onChange={(e) => {
+                        setConfPass("")
+                        validateMsg && typeof validateMsg === 'object' && delete (validateMsg as any).confPassword
                         setPass(e.target.value)
                         requiredValidate(e, setValidateMsg, validateMsg, setIsError)
                         passValidate(e, setValidateMsg, validateMsg, setIsError)
@@ -159,9 +162,11 @@ const AddPanitia = () => {
                     name="confPassword" 
                     type="password"
                     label="Confirm Password"
+                    value={confPass}
                     disabled={isLoading}
                     validateMsg={validateMsg}
                     onChange={(e) => {
+                        setConfPass(e.target.value)
                         requiredValidate(e, setValidateMsg, validateMsg, setIsError)
                         confirmPassValidate(e, pass, setValidateMsg, validateMsg, setIsError)
                     }}

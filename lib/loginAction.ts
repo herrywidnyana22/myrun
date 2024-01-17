@@ -15,7 +15,6 @@ export const authenticate =  async (formData: FormData) => {
     //       return 'Something went wrong.';
     //   }
     // }
-    console.log(error)
     throw error;
   }
 }
