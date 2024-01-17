@@ -7,8 +7,8 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { ListTodo, LogOut, UserPlus, X } from "lucide-react";
 import DialogModal from "./modals";
-import AddKategori from "@/app/(main)/dashboard/[tabelmenu]/components/form-addKategori";
-import AddPanitia from "@/app/(main)/dashboard/[tabelmenu]/components/form-addPanitia";
+import AddKategori from "@/app/(main)/dashboard/(panitia)/components/form-addKategori";
+import AddPanitia from "@/app/(main)/dashboard/(panitia)/components/form-addPanitia";
 import { adminUser } from "@/app/initUser";
 
 const PopoverAvatar = () => {

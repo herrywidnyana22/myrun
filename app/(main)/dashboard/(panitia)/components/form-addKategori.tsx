@@ -2,7 +2,7 @@
 
 import ButtonForm from "@/components/form/butonForm";
 import InputForm from "@/components/form/inputForm";
-import { duplicateValidate, existValidate, isGroupEmpty, isGroupNotEmpty, requiredValidate, validateRange } from "@/lib/validate";
+import { duplicateValidate, existValidate, isGroupNotEmpty, requiredValidate, validateRange } from "@/lib/validate";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { addKategori } from "@/actions/kategori/add";
 import { toast } from "sonner";

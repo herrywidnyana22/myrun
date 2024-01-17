@@ -1,6 +1,6 @@
 'use server'
 
-import { AddKategoriDataFormat } from "@/app/(main)/dashboard/[tabelmenu]/components/form-addKategori"
+import { AddKategoriDataFormat } from "@/app/(main)/dashboard/(panitia)/components/form-addKategori"
 import { db } from "@/lib/db"
 
 

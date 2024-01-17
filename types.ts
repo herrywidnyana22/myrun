@@ -133,3 +133,9 @@ export interface InputFormProps{
     checked?: boolean
     defaultChecked?:boolean
 }
+
+export type TableProps = {
+  data: any[]
+  pos?: any,
+  currentUser?: any
+}

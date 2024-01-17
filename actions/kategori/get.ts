@@ -1,12 +1,13 @@
 'use server'
 
-import { adminUser } from "@/app/initUser"
+import { adminUser, panitiaUser } from "@/app/initUser"
 import { db } from "@/lib/db"
 
 export async function getKategoriUser(){
     // const currentUser = await getCurrentUser()
     // if (currentUser && currentUser?.role !== Role.PANITIA) return new NextResponse('Unauthorized', { status: 401})
-    const currentUser = adminUser.id
+    // const currentUser = adminUser.id
+    const currentUser = panitiaUser.id
     const menuPanitia = await db.panitia.findMany({
         select:{
             id: true,

@@ -16,6 +16,8 @@ export async function editPeserta(
         const { noPeserta, waktu } = data
         let updateAction
 
+        console.log({data})
+
         // validate or check if no peserta exist in same pos
         const isSamePos = await existData(noPeserta, "peserta", posID, pesertaID)
 
@@ -24,7 +26,7 @@ export async function editPeserta(
         }
 
 
-        // check is no peserta registrate on other pos?
+        // check if noPeserta exist in other pos but same kategori?
         const isNoPesertaExist = await db.peserta.findFirst({
             where:{
                 AND:[
@@ -59,28 +61,17 @@ export async function editPeserta(
             
         // jika tidak ada, maka buat nopeserta baru
         } else {
-            updateAction = await db.peserta.create({
+            updateAction = await db.peserta.update({
                 data: {
-                    noPeserta: noPeserta[noPeserta.id],
-                    kategori: {
-                        connect: {
-                            id: kategoriID,
-                        }
-                    },
-                    pos: {
-                        connect: {
-                            id: posID,
-                        }
-                    },
-                    waktu: noPeserta.time
+                    noPeserta
+                    
                 },
-                include:{
-                    pos: true,
-                    kategori: true
+                where:{
+                    id: pesertaID
                 }
             })
 
-             if(!updateAction) throw new Error("Gagal memperbarui data...")
+            if(!updateAction) throw new Error("Gagal memperbarui data...")
         }
 
         revalidatePath("/dashboard/")

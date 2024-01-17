@@ -1,7 +1,9 @@
-import MenuDashboard from "./dashboard/components/dashboard-menu"
+import MenuDashboard from "./components/dashboard-menu"
 
 import { getPosName } from "@/actions/pos/get"
 import { getKategoriUser } from "@/actions/kategori/get"
+import { adminUser, panitiaUser } from "@/app/initUser"
+import { Role } from "@prisma/client"
 
 
 interface MainLayoutProps{
@@ -11,12 +13,35 @@ interface MainLayoutProps{
     children: React.ReactNode
 }
 
+const user = panitiaUser
+
 const MainLayout = async({
     children,
     params
 }: MainLayoutProps)  =>{
     const userKategori = await getKategoriUser()
+
+    const homeMenu = [{
+      label: "Home",
+      href: "/dashboard",
+      active: "/dashboard"
+    }]
     
+    const menuAdmin = [
+      {
+        label: "User",
+        href: "/dashboard/user",
+        active: "/dashboard/user"
+      }, {
+        label: "Kategori",
+        href: "/dashboard/kategori",
+        active: "/dashboard/kategori"
+      }, {
+        label: "Peserta",
+        href: "/dashboard/peserta",
+        active: "/dashboard/peserta"
+      }, 
+    ]
 
     const menuPanitia = userKategori.flatMap((item) => 
       item.pos.map((posItem) => ({
@@ -26,7 +51,15 @@ const MainLayout = async({
       })
     ))
 
-    const userPos = await getPosName(params.tabelmenu)
+    let menuItem
+
+    if(user.role === Role.ADMIN){
+      menuItem = [...homeMenu, ...menuAdmin]
+    } else if (user.role === Role.PANITIA){
+      menuItem = [...homeMenu, ...menuPanitia]
+    } else {
+      return null
+    }
 
     return(
       
@@ -43,7 +76,7 @@ const MainLayout = async({
           md:max-w-screen-2xl
         "
       >
-        <MenuDashboard userMenu = {menuPanitia}/>
+        <MenuDashboard userMenu = {menuItem}/>
         { children }
       </div>
           

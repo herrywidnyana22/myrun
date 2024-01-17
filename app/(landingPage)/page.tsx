@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 import { fontHeading, fontText } from "@/public/fonts/fontGlobal";
 
-
 const LandingPage = () => {
     return ( 
         <div

@@ -1,5 +1,6 @@
 "use server"
 
+import { panitiaUser } from "@/app/initUser"
 import { db } from "@/lib/db"
 import { formatURL } from "@/lib/formatter"
 import { Role } from "@prisma/client"
@@ -33,7 +34,7 @@ export async function getPos (menuName: string) {
 export async function getPosName(menuName: string) {
     const namaKategori = formatURL(menuName)
     // const currentUser = await getCurrentUser()
-    const currentUser = "649150f9ee778183c0079cf2"
+    const currentUser = panitiaUser.id
 
     const getPosName = await db.pos.findFirst({
         select:{

@@ -38,3 +38,13 @@ export function formatForm(formData: any) {
     // return JSON.stringify(formDataObject);
     return formDataObject;
 }
+
+export function dataFormat(data: any, dataState: any){
+    // ubah format data dari server, tambahkan field error buat validasi
+    const newData = data && data.map((dataItem: any) =>({
+        ...dataItem,
+        error: {}
+    }))
+    
+    return dataState(newData)
+}

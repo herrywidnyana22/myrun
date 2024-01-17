@@ -8,7 +8,7 @@ export const adminUser = {
 }
 
 export const panitiaUser = {
-    id: "64903215d350b7682cef3eff",
+    id: "6592ae8a32b6a342cba8d147",
     namaPanitia: "Herry Widnyana",
     username: "herry",
     hashPassword: "$2b$12$Xcpec779V1yNieFXlab0CuQ27Qb/owb2gk516eDTl1pqWpfGKTZnm",
