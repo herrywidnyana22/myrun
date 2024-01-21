@@ -11,6 +11,7 @@ import { confirmPassValidate, existValidate, passValidate, requiredValidate, use
 import { Save } from "lucide-react";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { ResponProps, respon } from "@/types";
 
 import InputForm from "@/components/form/inputForm";
 import ButtonForm from "@/components/form/butonForm";
@@ -53,15 +54,17 @@ const AddPanitia = () => {
         const data = formatForm(formData)
 
         try {
-            const responAddPanitia = await addPanitia(data)
+            const responAddPanitia = await addPanitia(data) as ResponProps
             if(responAddPanitia.data){
                 toast.success(responAddPanitia.msg)
                 refClose.current?.click()
             } else {
-                toast.success(responAddPanitia.msg)
+                toast.error(responAddPanitia.msg)
             }
+
+            console.log({responAddPanitia})
         } catch (error: any) {
-            toast.error(error)
+            toast.error(error.msg)
         } finally{
             setIsLoading(false)
         }
@@ -84,15 +87,15 @@ const AddPanitia = () => {
     useEffect(() =>{
         const kategoriData = async() =>{
             try {
-                const getData = await getAllKategori()
-
-                if(!getData) {
-                    toast.error("Belum ada Kategori")
+                const getData = await getAllKategori() as ResponProps
+                console.log({getData})
+                if(getData.code !== 200) {
+                    toast.error(getData.msg)
                 } else {
-                    setKategoriData(getData)
+                    setKategoriData(getData?.data)
                 }
             } catch (error: any) {
-                toast.error(error.message)
+                toast.error(error.msg)
             }
         }
 
@@ -134,7 +137,7 @@ const AddPanitia = () => {
                     disabled={isLoading}
                     validateMsg={validateMsg}
                     onChange={(e) => {
-                        existValidate({e, model: "panitia", setValidateMsg, validateMsg, setIsError})
+                        existValidate({e, model: "user", setValidateMsg, validateMsg, setIsError})
                         requiredValidate(e, setValidateMsg, validateMsg, setIsError)
                         usernameFormatValidate(e, setValidateMsg, validateMsg, setIsError)
                     }}

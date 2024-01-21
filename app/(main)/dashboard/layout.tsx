@@ -4,6 +4,7 @@ import { getPosName } from "@/actions/pos/get"
 import { getKategoriUser } from "@/actions/kategori/get"
 import { adminUser, panitiaUser } from "@/app/initUser"
 import { Role } from "@prisma/client"
+import { ResponProps } from "@/types"
 
 
 interface MainLayoutProps{
@@ -13,13 +14,13 @@ interface MainLayoutProps{
     children: React.ReactNode
 }
 
-const user = panitiaUser
+const user = adminUser
 
 const MainLayout = async({
     children,
     params
 }: MainLayoutProps)  =>{
-    const userKategori = await getKategoriUser()
+    const userKategori = await getKategoriUser() as ResponProps
 
     const homeMenu = [{
       label: "Home",
@@ -43,8 +44,8 @@ const MainLayout = async({
       }, 
     ]
 
-    const menuPanitia = userKategori.flatMap((item) => 
-      item.pos.map((posItem) => ({
+    const menuPanitia = userKategori.data?.flatMap((item: any) => 
+      item.pos.map((posItem: any) => ({
           label: posItem.kategori.namaKategori,
           href: `/dashboard/${posItem.kategori.namaKategori.toLowerCase()}`,
           active: `/dashboard/${posItem.kategori.namaKategori.toLowerCase()}`

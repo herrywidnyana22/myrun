@@ -1,6 +1,6 @@
 
 import { existData } from "@/actions/validate/existData";
-import { ValidateMessage, validationType } from "@/types"
+import { ResponProps, ValidateMessage, validationType } from "@/types"
 import { AlertMessage } from "@/types"
 
 
@@ -51,12 +51,14 @@ export const existValidate = async({
 
     let isExist
     if(isEdit) {
-        isExist = await existData(value, model!, dataID, id)
+        isExist = await existData(value, model!, dataID, id) as ResponProps
     } else{
-        isExist = await existData(value, model!, dataID)
+        isExist = await existData(value, model!, dataID) as ResponProps
     }
 
-    if(isExist){
+    console.log({isExist})
+
+    if(isExist.data){
        error[id] = ValidateMessage.exist
        setIsError(true)
     }

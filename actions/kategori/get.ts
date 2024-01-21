@@ -2,12 +2,14 @@
 
 import { adminUser, panitiaUser } from "@/app/initUser"
 import { db } from "@/lib/db"
+import { CustomError, respon } from "@/types"
 
 export async function getKategoriUser(){
     // const currentUser = await getCurrentUser()
     // if (currentUser && currentUser?.role !== Role.PANITIA) return new NextResponse('Unauthorized', { status: 401})
     // const currentUser = adminUser.id
     const currentUser = panitiaUser.id
+
     const menuPanitia = await db.panitia.findMany({
         select:{
             id: true,
@@ -33,7 +35,7 @@ export async function getKategoriUser(){
 
     })
 
-    return menuPanitia
+    return respon(200, 'ok', "Berhasil mendapatkan data...", menuPanitia)
 }
 
 export async function getAllKategori(){
@@ -42,15 +44,33 @@ export async function getAllKategori(){
             select:{
                 id:true,
                 namaKategori: true,
-                pos: true
+                pos: {
+                    select:{
+                        id: true,
+                        namaPos: true,
+                        panitia: {
+                            select: {
+                                id: true,
+                                namaPanitia: true
+                            }
+                        }
+                    },
+                    orderBy:{
+                        namaPos: 'asc'
+                    }
+                }
             }
         })
 
-        if(!kategoriData) throw new Error("Gagal memperbarui data...")
+        if(!kategoriData) return respon(500, 'error', "Gagal mendapatkan data...")
 
-        return kategoriData
+        return respon(200, 'ok', "Berhasil mendapatkan data...", kategoriData)
 
     } catch (error) {
-        throw new Error("Kesalahan sistem...")
+        if (error instanceof CustomError) {
+            return respon(500, 'error', "Server Error...!")
+        } else{
+            return error
+        }
     }
 }

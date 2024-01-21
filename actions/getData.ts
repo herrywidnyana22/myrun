@@ -35,7 +35,7 @@ const getDataByMenu = async(menu: keyof PrismaClient | any) => {
                     })
                     break
                 
-                case "panitia":
+                case "user":
                     data = await db.panitia.findMany({
                         select:{
                             id:true,

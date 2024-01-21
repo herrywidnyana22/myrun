@@ -12,6 +12,7 @@ import { Suspense, createElement } from "react";
 import { SkeletonDemo } from "../(panitia)/components/table-skeleton";
 import { adminUser, panitiaUser } from "@/app/initUser";
 import { Role } from "@prisma/client";
+import { Button } from "@/components/ui/button";
 
 interface MainPageProps{
     params:{
@@ -30,7 +31,7 @@ const MainPage = async({params}: MainPageProps) => {
     const userPos = await getPosName(params.tabelmenu)
     const getPosData =  await getPos(params.tabelmenu)
 
-    const userRole = panitiaUser.role
+    const userRole = adminUser.role
     const currentUser = adminUser
 
     const data = await getDataByMenu(params.tabelmenu)
@@ -67,16 +68,27 @@ const MainPage = async({params}: MainPageProps) => {
             </div>
 
             
-            {
-                userRole === Role.PANITIA &&
+            
                 <div className="space-y-4 col-span-1">
-                    <CardGroup data={dataPeserta}/>
-                    <GroupInputPeserta 
-                        userKategori={params.tabelmenu}
-                        userPos = {userPos} 
-                    />
+                    {
+                        userRole === Role.PANITIA &&
+                        <>
+                            <CardGroup data={dataPeserta}/>
+                            <GroupInputPeserta 
+                                userKategori={params.tabelmenu}
+                                userPos = {userPos} 
+                            />
+                        </>
+                    }
+                    {
+                        userRole === Role.ADMIN &&
+                        <div>
+                            <Button>
+                                bangsat
+                            </Button>
+                        </div>
+                    }
                 </div>
-            }
             
         </div>
     )

@@ -66,6 +66,7 @@ export const ValidateMessage = {
     groupRequired: "Salah satu wajib diisi"
 }
 
+
 export const AlertMessage = {
     getSuccess: "Data berhasil ditemukan",
     addSuccess : "Data berhasil ditambahkan",
@@ -135,7 +136,41 @@ export interface InputFormProps{
 }
 
 export type TableProps = {
-  data: any[]
-  pos?: any,
-  currentUser?: any
+    data: any[]
+    pos?: any,
+    currentUser?: any
 }
+
+export interface ResponProps{
+    code: number, 
+    status: 'ok' | 'error', 
+    msg: string, 
+    data?: any
+}
+
+export class CustomError extends Error {
+    public code: number;
+    public status: 'ok' | 'error';
+    public msg: string;
+    public data?: any;
+
+    constructor(code: number, status: 'ok' | 'error', msg: string, data?: any) {
+        super(msg);
+        this.code = code;
+        this.status = status;
+        this.msg = msg;
+        this.data = data;
+    }
+}
+
+export const respon = (
+    code: number,
+    status: 'ok' | 'error',
+    msg: string,
+    data?: any
+): ResponProps => ({
+    code,
+    status,
+    msg,
+    data,
+});

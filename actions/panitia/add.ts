@@ -2,9 +2,10 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { AlertMessage } from "@/types";
+import { AlertMessage, CustomError, respon } from "@/types";
 
 import bcrypt from "bcrypt"
+import { Role } from "@prisma/client";
 
 export async function addPanitia(data: any){
 
@@ -19,14 +20,32 @@ export async function addPanitia(data: any){
             confPassword,
             role,
         } = data
+
+        console.log({nama})
+        console.log({username})
+        console.log({password})
+        console.log({confPassword})
+        console.log({role})
+
+
         let {namaKategori, posId} = data
         let addPanitia
 
         
-        if (!nama || !username || !password || !namaKategori || !posId) throw new Error('Missing info')
+        if (role === Role.ADMIN){
+            if(!nama || !username || !password) {
+                throw respon(400, 'error', 'Missing info')
+            }
+        }
+        
+        if (role === Role.PANITIA){ 
+            if(!nama || !username || !password || !namaKategori || !posId){
+                throw respon(400, 'error', 'Missing info')
+            }
+        }
         
         if (password !== confPassword) {
-            throw new Error("Password dan confirm password tidak sama")
+            throw respon(422, 'error', "Password dan confirm password tidak sama")
         }
         const hashedPass = await bcrypt.hash(password, 12)
         
@@ -37,7 +56,7 @@ export async function addPanitia(data: any){
         })
 
         if(cekData) {
-            throw new Error("Username sudah terdaftar")
+            throw respon(409, 'error', "Username sudah terdaftar")
         }
         
 
@@ -68,7 +87,7 @@ export async function addPanitia(data: any){
 
             // Check if all required kategori and pos records were found
             if (existingKategori && existingKategori.length !== namaKategori.length || existingPos.length !== posId.length) {
-                throw new Error('One or more required kategori or pos records not found');
+                throw respon(404, 'error', 'One or more required kategori or pos records not found');
             }
 
             addPanitia = await db.panitia.create({
@@ -92,17 +111,14 @@ export async function addPanitia(data: any){
 
         revalidatePath("/dashboard/")
 
-        return { 
-            data: addPanitia, 
-            msg: AlertMessage.addSuccess,
-            status: 200
-        }
+        return respon(200,  'ok', AlertMessage.addSuccess, addPanitia)
+        
 
     } catch (error:any) {
-        return{
-            msg: error.message
+        if (error instanceof CustomError) {
+            return respon(500, 'error', "Server Error...!")
+        } else{
+            return error
         }
     }
-
-   
 }

@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ElementRef, createRef, useCallback, useEffect, useRef, useState } from "react"
-import { AlertMessage, PesertaData, posData } from "@/types"
+import { AlertMessage, PesertaData, ResponProps, posData } from "@/types"
 import { checkedDelete, singleDeleted } from "@/actions/peserta/delete"
 import { toast } from "sonner"
 import { existValidate } from "@/lib/validate"
@@ -88,12 +88,12 @@ const Datatable = ({dataTable, userPos, posData}: TableContentProps) => {
         setIsLoading(true)
 
         try {
-            const responDelete = await checkedDelete(checkAll, posID)
-            if(responDelete){
-                toast.success(AlertMessage.removeSuccess)
+            const responDelete = await checkedDelete(checkAll, posID) as ResponProps
+            if(responDelete.data){
+                toast.success(responDelete.msg)
             }
-        } catch (error) {
-            toast.error(AlertMessage.removeFailed)
+        } catch (error: any) {
+            toast.error(error.msg)
         } finally{
             setIsLoading(false)
         }
@@ -130,7 +130,7 @@ const Datatable = ({dataTable, userPos, posData}: TableContentProps) => {
 
     const handleInputPeserta = (e: React.ChangeEvent<HTMLInputElement>, noPeserta: string) =>{
         // dapatkan no peserta yg diinput
-        const recentNoPeserta = refInput.current[pesertaEdited]?.value
+        // const recentNoPeserta = refInput.current[pesertaEdited]?.value
         existValidate({e, model: "peserta", setValidateMsg, validateMsg, setIsError, dataID:posID, isEdit: true})
         resetValidateMsg()
         // }
@@ -448,15 +448,15 @@ const Datatable = ({dataTable, userPos, posData}: TableContentProps) => {
                         </form>
                     </div>
                     <div 
-                    className="
-                        flex 
-                        items-center 
-                        justify-end 
-                        space-x-2 
-                        py-4
+                        className="
+                            flex 
+                            items-center 
+                            justify-end 
+                            space-x-2 
+                            py-4
                     ">
                         <div className="flex-1 text-sm text-muted-foreground">
-                        {checkAll.length} / {" "+pesertaData.length}
+                            {checkAll.length} / {" "+pesertaData.length}
                         </div>
                         <div className="flex gap-2">
                         <Button

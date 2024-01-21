@@ -6,7 +6,7 @@ import { duplicateValidate, existValidate, isGroupNotEmpty, requiredValidate, va
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { addKategori } from "@/actions/kategori/add";
 import { toast } from "sonner";
-import { AlertMessage } from "@/types";
+import { AlertMessage, ResponProps } from "@/types";
 import { Save } from "lucide-react";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -145,13 +145,15 @@ const AddKategori = () => {
         }
 
         try {
-            const responAddKategori = await addKategori(data)
-            if(responAddKategori){
+            const responAddKategori = await addKategori(data) as ResponProps
+            if(responAddKategori.data){
                 toast.success(AlertMessage.addSuccess)
                 refClose.current?.click()
+            } else{
+                toast.error(responAddKategori.msg)
             }
         } catch (error: any) {
-            toast.success(error.message)
+            toast.success(error.msg)
         } finally{
             setIsLoading(false)
         }

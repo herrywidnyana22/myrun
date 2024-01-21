@@ -1,6 +1,7 @@
 'use server'
 
 import { db } from "@/lib/db"
+import { CustomError, respon } from "@/types"
 
 export async function existData(
     data: any, 
@@ -10,11 +11,11 @@ export async function existData(
 ){
 
     try {
-        let respon: any[]= []
+        let responAction: any[]= []
         switch (model) {
             case "kategori":
                 if(!dataID) {
-                    respon = await db.kategori.findMany({
+                    responAction = await db.kategori.findMany({
                         select:{
                             id: true,
                             namaKategori: true
@@ -26,7 +27,7 @@ export async function existData(
                     })
                     
                 } else {
-                    respon = await db.kategori.findMany({
+                    responAction = await db.kategori.findMany({
                         select:{
                             id: true,
                             namaKategori: true
@@ -47,9 +48,9 @@ export async function existData(
                     
                 break
             
-            case "panitia":
+            case "user":
                 if(!dataID){
-                    respon = await db.panitia.findMany({
+                    responAction = await db.panitia.findMany({
                         select:{
                             id: true,
                             username: true
@@ -60,7 +61,7 @@ export async function existData(
                         },
                     })
                 } else {
-                        respon = await db.panitia.findMany({
+                        responAction = await db.panitia.findMany({
                         select:{
                             id: true,
                             username: true
@@ -85,7 +86,7 @@ export async function existData(
     
             case "peserta":
                 if(pesertaID){
-                    respon = await db.peserta.findMany({
+                    responAction = await db.peserta.findMany({
                         select:{
                             id: true,
                             noPeserta: true
@@ -108,7 +109,7 @@ export async function existData(
                         },
                     })
                 } else {
-                    respon = await db.peserta.findMany({
+                    responAction = await db.peserta.findMany({
                         select:{
                             id: true,
                             noPeserta: true,
@@ -135,15 +136,17 @@ export async function existData(
         }
     
     
-        if(respon.length === 0) {
-            return false
+        if(responAction.length === 0) {
+            return respon(200, 'ok', "Not duplicate...!", false)
         }
         
-        return true
+        return respon(409, 'error', "duplicate...!", true)
         
     } catch (error) {
-        return{
-            msg: error
+        if (error instanceof CustomError) {
+            return respon(500, 'error', "Server Error...!")
+        } else{
+            return error
         }
     }
     

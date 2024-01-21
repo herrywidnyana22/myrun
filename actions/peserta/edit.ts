@@ -3,6 +3,7 @@
 import { db } from "@/lib/db"
 import { existData } from "../validate/existData"
 import { revalidatePath } from "next/cache"
+import { AlertMessage, CustomError, respon } from "@/types"
 
 
 export async function editPeserta(
@@ -22,7 +23,7 @@ export async function editPeserta(
         const isSamePos = await existData(noPeserta, "peserta", posID, pesertaID)
 
         if(isSamePos) {
-            throw new Error ("No peserta sudah ada")
+            return respon(500, 'error', "No peserta sudah ada")
         }
 
 
@@ -57,7 +58,7 @@ export async function editPeserta(
                 }
             })
 
-            if(!updateAction) throw new Error("Gagal memperbarui data...")
+            if(!updateAction) return respon(500, 'error', "Gagal memperbarui data...")
             
         // jika tidak ada, maka buat nopeserta baru
         } else {
@@ -71,18 +72,20 @@ export async function editPeserta(
                 }
             })
 
-            if(!updateAction) throw new Error("Gagal memperbarui data...")
+            if(!updateAction) return respon(500, 'error', "Gagal memperbarui data...")
         }
 
         revalidatePath("/dashboard/")
 
-        return {
-            data: updateAction
-        }
+        return respon(200, 'ok',AlertMessage.addSuccess, updateAction)
 
 
     } catch (error) {
-        throw new Error("Kesalahan sistem...")
+        if (error instanceof CustomError) {
+            return respon(500, 'error', "Server Error...!")
+        } else{
+            return error
+        }
     }
     
     

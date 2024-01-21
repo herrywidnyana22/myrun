@@ -1,6 +1,7 @@
 'use server'
 
 import { db } from "@/lib/db"
+import { CustomError, respon } from "@/types"
 import { revalidatePath } from "next/cache"
 
 export async function singleDeleted(pesertaID: string) {
@@ -99,14 +100,14 @@ export async function checkedDelete(data: any, posID: string){
         
 
     } catch (error) {
-        return {
-            deletePeserta: error
+        if (error instanceof CustomError) {
+            return respon(500, 'error', "Server Error...!")
+        } else{
+            return error
         }
     }
 
     revalidatePath("/dashboard/")
     
-    return{
-        data: deletePeserta
-    }
+    return respon(200, 'ok', "Data didapatkan...!", deletePeserta)
 }
